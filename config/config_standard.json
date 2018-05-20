@@ -1,0 +1,51 @@
+{
+    "Software":
+    {
+        "assay_timings":
+        {   
+            "testAssayShort": [75, 75],
+            "acqShortTimes": [75, 75, 75, 75, 75, 75, 75, 75, 75, 150, 300, 300],
+            "acq3900sTimes": [75, 75, 75, 75, 75, 75, 75, 75, 75, 150, 300, 600, 900, 1200] , 
+            "acq6300sTimes": [75, 75, 75, 75, 75, 75, 75, 75, 75, 150, 300, 600, 900, 1200, 2400],
+            "acq9000sTimes": [75, 75, 75, 75, 75, 75, 75, 75, 75, 150, 300, 600, 900, 1200, 2400, 3600],
+            "acq14700sTimes": [75, 75, 75, 75, 75, 75, 75, 75, 75, 150, 300, 600, 900, 1200, 2400, 3600, 4800],
+            "acq20700sTimes": [75, 75, 75, 75, 75, 75, 75, 75, 75, 150, 300, 600, 900, 1200, 2400, 3600, 4800, 6000]
+        },
+        "start_note": "Experimental Start"
+    },
+    "Hardware":
+    {
+        "setup_id": "Fordyce_Setup_4",
+        "mm":
+        {
+            "channels":
+            [
+                "1pbp",
+                "2bf",
+                "3dapi",
+                "4egfp",
+                "5cy5"
+            ],
+            "filterblock_name": "TiFilterBlock",
+            "core_timeout": 10000,
+            "config_loc": "C:\\Program Files\\Micro-Manager-2.0beta\\Fordyce_MASTER_March2018_2.cfg",
+            "version": "C:\\Program Files\\Micro-Manager-2.0beta",
+            "defaults":
+            {
+                "binning": "2x2",
+                "exposure": "200"
+            }
+        },
+        "wago":
+        {
+            "valvemap_path": "C:\\Users\\Stanford\\Documents\\Controllers\\eMITOMI\\runpack\\valvemaps\\2block.csv",
+            "address": "192.168.1.2",
+            "offset": 512
+        },        
+        "temp_hum":
+        {
+            "vid": "0x1313",
+            "pid": "0x80F8"
+        }
+    }
+}

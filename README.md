@@ -9,7 +9,7 @@ RunPack is a microfluidic valving and microscope control suite designed for MITO
   - Experimental hardware access provided via the *HardwareInterface*, which allows for instantiation, control, and removal of connections to the microscope/camera/stage/sola, the WAGO, and temperature/humidity probes.
   - Experimental details including device features, general assay parameters, and logging—managed by the *ExperimentalHarness*
 - **imagingcontrol**: Collection of functions for imaging at single or multiple stage positions (rastered, multi-dimensional acquisitions), for single or multiple timepoints (kinetic)
--**valvecontrol**: Collection of basic valve-control functions with error checking and logging
+- **valvecontrol**: Collection of basic valve-control functions with error checking and logging
 - **assays**: High-level classes to execute a single device assay, a linear series of assays, or multi-device scheduled assays
   - An eMITOMI-specific *Assay* class to introduce substrate and execute imaging 
   - An *AssaySeries* parent class for sequential assay execution

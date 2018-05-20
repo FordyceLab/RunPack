@@ -108,7 +108,7 @@ def scan(data_dir, channelsExposures, dname, note, position_list, wrappingFolder
             os.makedirs(outDir)
     
     messageItems = str(dname), str(channelsExposures), str(note.replace(' ', '_'))
-    startMessage = 'Started Scan of {}, channelsExposures = {}, note = {}'.format(8messageItems)
+    startMessage = 'Started Scan of {}, channelsExposures = {}, note = {}'.format(messageItems)
     eh.acquilogger.info(startMessage)
     
     if wrappingFolder:

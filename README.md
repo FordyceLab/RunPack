@@ -14,19 +14,17 @@ RunPack is a microfluidic valving and microscope control suite designed for MITO
   - An eMITOMI-specific *Assay* class to introduce substrate and execute imaging 
   - An *AssaySeries* parent class for sequential assay execution
   - (In development) A general-purpose task-scheduling "Riffled" Assay class for simultaneous/staggered assay execution using shared hardware (camera/scope/stage)
+- **mitomiprotocols**: General MITOMI and eMITOMI-specific experimental protocols/scripts
+- **taskscheduler**: A general-purpose task scheduler for shared microscope/stage resources (not production ready)
 
 ### Setup
-
 #### Configuration
-1. config.json: A JSON configuration file specifying hardware parameters, software configuration, and experimental intiial values
+1. config.json: A JSON configuration file specifying hardware parameters, software configuration, and experimental intial values
 2. valvemap.csv: A comma-delimited file specifying valve names corresponding to specific WAGO-controlled solenoids
-
-#### Notebook setup
-Coming Soon
-
+#### Notebook
+Coming Soon!
 ## Tasks
 - [ ] Implement 6-block specific assay
 - [ ] Refactor Assay Class as parent, and TurnoverAssay as a child
 - [ ] Refactor existing classes for better 6-/4-Block MITOMI support
 - [ ] \(Optional) Implement Device class to handle diverse device configurations and better valve control handling
-

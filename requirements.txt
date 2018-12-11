@@ -4,3 +4,4 @@ pandas>=0.19.2
 numpy>=1.13.3
 Pillow>=5.3.0
 apscheduler>=3.5.3
+PyVISA>=1.9.1

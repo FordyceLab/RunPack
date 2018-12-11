@@ -447,7 +447,7 @@ class HardwareInterface:
             (str) Description of the experimental harness description
         """
 
-        stringVals = {'vm', HardwareInterface.valvemapPath, 'ma': HardwareInterface.manifoldAddress, 
+        stringVals = {'vm': HardwareInterface.valvemapPath, 'ma': HardwareInterface.manifoldAddress, 
                         'mmv': HardwareInterface.mm_version, 'mmc': HardwareInterface.mmcfg, 
                             'f': HardwareInterface.channels}
         return 'Hardware Interface Current State: \n\

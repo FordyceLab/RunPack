@@ -28,7 +28,6 @@ Coming Soon!
 - [ ] Refactor Assay Class as parent, and TurnoverAssay as a child
 - [ ] Refactor existing classes for better 6-/4-Block MITOMI support
 - [ ] \(Optional) Implement Device class to handle diverse device configurations and better valve control handling
-- [ ] 
 
 ## Dev Notes:
 - Check package requirements: use `pipreqs` on directory containing runpack 

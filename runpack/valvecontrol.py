@@ -16,6 +16,8 @@ from runpack.io import HardwareInterface as hi
 from runpack.io import ExperimentalHarness as eh
 
 
+referenceIndex = 'chip' #Column name in valvemap
+
 
 def launchGui():
     """

@@ -372,7 +372,8 @@ class HardwareInterface:
         if channel:
             HardwareInterface.core.setConfig('Channel', str(channel))
             logging.info('Camera Channel Set: {}'.format(channel))
-        HardwareInterface.core.waitForDevice(HardwareInterface.filterBlockName)
+        # HardwareInterface.core.waitForDevice(HardwareInterface.filterBlockName)
+        HardwareInterface.core.waitForSystem()
 
 
     def unloadHardware(self):
@@ -539,6 +540,7 @@ class TemperatureProbe:
         except:
             warnings.warn('Could not read onboard probe temperature')
             temp = 999.9
+        return temp
 
     def getProbeTemp(self):
         """
@@ -568,7 +570,7 @@ class TemperatureProbe:
             (float) Onboard humidity (%)
         """
         try:
-            temp = float(self.inst.query('SENS2:HUM:DATA?'))
+            hum = float(self.inst.query('SENS2:HUM:DATA?'))
         except:
             warnings.warn('Could not read probe humidity')
             hum = 999.9

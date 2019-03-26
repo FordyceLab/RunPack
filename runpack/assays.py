@@ -3,8 +3,8 @@
 # authors           : Daniel Mokhtari
 # credits           : Scott Longwell
 # date              : 20180520
-# version update    : 20180520
-# version           : 0.1.0
+# version update    : 20190326
+# version           : 0.1.1
 # usage             : With permission from DM
 # python_version    : 2.7
 

@@ -3,8 +3,8 @@
 # authors           : Daniel Mokhtari
 # credits           : Craig Markin
 # date              : 20180520
-# version update    : 20180520
-# version           : 0.1.0
+# version update    : 20190326
+# version           : 0.1.1
 # usage             : With permission from DM
 # python_version    : 2.7
 
@@ -243,7 +243,7 @@ def flowSubstrateStartAssay(deviceName, substrateInput, KineticAcquisition, equi
     """   
 
     sendToQueue = scanQueueFlag  
-    # print('The flowSubstrateStartAssay scanqueue flag is {}'.format(sendToQueue))
+    inputValve =  substrateInput[:-1]
 
     eh.scriptlogger.info('>> Flowing substrate, starting assay ' + 'for device ' + deviceName + ' in lines ' + str(substrateInput))
     deviceNumber = str(deviceName[-1])
@@ -251,16 +251,20 @@ def flowSubstrateStartAssay(deviceName, substrateInput, KineticAcquisition, equi
     #Flush the inlet tree
     eh.scriptlogger.info('The inlet tree wash started for substrate in ' + str(substrateInput))
     vc.returnToSafeState([deviceName])
-    vc.openValves([deviceName], [substrateInput[:-1], 'w'])
+    vc.openValves([deviceName], [inputValve, 'w'])
     time.sleep(treeFlushTime)
     eh.scriptlogger.info('The inlet tree wash done for substrate in ' + str(substrateInput))
     
     #Expose chip to substrate, equilibrate for equilibrationTime
     eh.scriptlogger.info('Chip equilibration started for substrate in ' + str(substrateInput))
-    vc.closeValves([deviceName], ['w'])
+    if inputValve == 'w': #For the instance where the waste line is the input
+        pass
+    else:
+        vc.closeValves([deviceName], ['w'])
     vc.openValves([deviceName], ['in', 'out', 's1', 's2'])
     time.sleep(equilibrationTime)
     eh.scriptlogger.info('Chip equilibration done for substrate in ' + str(substrateInput))
+
 
     if postEquilibrationImaging:
         if sendToQueue == True:
@@ -269,7 +273,6 @@ def flowSubstrateStartAssay(deviceName, substrateInput, KineticAcquisition, equi
             ic.hardwareQueue.put((args, kwargs))
         else:
             ic.scan(eh.rootPath, postEquilibImageChanExp, deviceName, KineticAcquisition.note.replace(" ", "_")+'_PreAssay_ButtonQuant', eh.posLists[deviceName], wrappingFolder = True)
-        
 
     #Close things to prep for assay, and open buttons
     vc.closeValves([deviceName], [substrateInput[:-1], 'in', 'out', 's1', 's2'])
@@ -278,7 +281,6 @@ def flowSubstrateStartAssay(deviceName, substrateInput, KineticAcquisition, equi
   
     #Start the assay
     if performImaging: 
-        # ic.bringHome(eh.posLists[deviceName])
         KineticAcquisition.startAssay(eh.rootPath, eh.posLists[deviceName], scanQueueFlag = sendToQueue)
 
 

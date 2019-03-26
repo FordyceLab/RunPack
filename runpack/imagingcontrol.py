@@ -3,8 +3,8 @@
 # authors           : Daniel Mokhtari, Scott Longwell
 # credits           : 
 # date              : 20180520
-# version update    : 20180520
-# version           : 0.1.0
+# version update    : 20190326
+# version           : 0.1.1
 # usage             : With permission from DM
 # python_version    : 2.7
 
@@ -153,7 +153,7 @@ def scan(data_dir, channelsExposures, dname, note, position_list, wrappingFolder
                 frameName = '{}/{}_{}.tif'.format(outPath, positionname, exposure)
                 imagePath = os.path.join(outPath, frameName)
 
-                summary = 'Device: {}, Note: {}'.format('Setup 3', note)
+                summary = 'Device: {}, Note: {}, ExpDescription: {}'.format('Setup 3', note, eh.experimentalDescription)
                 frameInfo = '{{Channel: {}, Index:{}, Pos:({},{})}}'.format(channel, i, x, y)
                 frameTime = datetime.datetime.now().strftime("%Y-%m-%d %H:%M:%S")
 

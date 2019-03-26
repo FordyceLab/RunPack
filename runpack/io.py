@@ -3,8 +3,8 @@
 # authors           : Daniel Mokhtari
 # credits           : 
 # date              : 20180520
-# version update    : 20180520
-# version           : 0.1.0
+# version update    : 20190326
+# version           : 0.1.1
 # usage             : With permission from DM
 # python_version    : 2.7
 
@@ -244,7 +244,9 @@ class HardwareInterface:
         self.loadConfig(configLoc)
         if loadAllHardware:
             self.initializeHardware()
-        else: logging.info('HardwareInterface Created. Add Hardware to Interface.')
+        else: 
+            logging.info('HardwareInterface Created. Add Hardware to Interface.')
+        logging.info('Experimental Description: {}'.format(ExperimentalHarness.experimentalDescription))
 
 
     def initializeHardware(self, subset = 'all'):

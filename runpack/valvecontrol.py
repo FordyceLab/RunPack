@@ -16,9 +16,6 @@ from runpack.io import HardwareInterface as hi
 from runpack.io import ExperimentalHarness as eh
 
 
-referenceIndex = 'chip' #Column name in valvemap
-
-
 def launchGui():
     """
     Wrapper for AcqPack manifold-controlling widget
@@ -29,7 +26,7 @@ def launchGui():
     Returns:
         None
     """
-    gui.manifold_control(hi.m, referenceIndex)
+    gui.manifold_control(hi.m, hi.valveReferenceIndex)
 
 
 def open(reference, valveName, logging = True):

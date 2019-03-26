@@ -86,21 +86,21 @@ def startHardwareQueue():
         scan(*args, **kwargs)
 
 
-def scan(data_dir, channelsExposures, dname, note, position_list, wrappingFolder = False, writeRecord = False):
+def scan(data_dir, channelsExposures, dname, note, position_list, wrappingFolder = False):
     """
     Raster image acquisition. Acquires images in a raster patern and saves the results.
+    Writes metadata to the acquired images.
     
     Arguements:
         (str) data_dir: root directory of image acquisitions
         (dict) channelsExposure: Dictionary of channels mapped to exposures (e.g., {'2bf':[50, 500], '1pbp':[100, 200]})
         (str) dname: device name ('d1' | 'd2' |'d3')
-        (str) note: Scan note
+        (str) note: Scan note, to be used in the image filename
         (pandas.DataFrame) position_list: stage xy position list
         (bool) wrappingFolder: flag to wrap acquistions inside another directory of name notes
-        (bool) writeRecord:
         
     Returns:
-        None
+        (pd.DataFrame) Pandas dataframe with a summary of the image raster
     """
 
     def makeDir(path):
@@ -157,10 +157,10 @@ def scan(data_dir, channelsExposures, dname, note, position_list, wrappingFolder
                 frameInfo = '{{Channel: {}, Index:{}, Pos:({},{})}}'.format(channel, i, x, y)
                 frameTime = datetime.datetime.now().strftime("%Y-%m-%d %H:%M:%S")
 
-                recordLabels = ['RasterStartTime', 'ScanParams', 'Channel', 'Exposure', 'ImagePath', 'RasterIndex',
-                                    'X', 'Y', 'dname', 'FrameTime', 'Temperature', 'Humidity', 'Note','Setup']
+                recordLabels = ['raster_start_time', 'scan_params', 'channel', 'exposure', 'image_path', 'raster_index',
+                                    'x', 'y', 'dname', 'frame_time', 'temperature', 'humidity', 'note','setup', 'experimental_desc']
                 recordFeatures = [startTime, channelsExposures, channel, exposure, imagePath,
-                                    i, x, y, dname, frameTime, temp, hum, note, hi.setup]
+                                    i, x, y, dname, frameTime, temp, hum, note, hi.setup, eh.experimentalDescription]
                 scanRecord[startTime][timestamp] = dict(zip(recordLabels, recordFeatures))
                 
                 exifIDs = [37888, 37889, 33434, 37510, 270, 306]
@@ -217,7 +217,7 @@ class KineticAcquisition():
         return np.cumsum(referencedDelayTimes).tolist()
 
 
-    def toString(self):
+    def __str__(self):
         """
         Prints and returns a string representation of the kinetic acquisition parameters.
     
@@ -252,7 +252,7 @@ class KineticAcquisition():
         kineticDirectory = os.path.join(data_dir, kineticSubfolder)
         os.makedirs(kineticDirectory)
             
-        eh.acquilogger.info(self.toString())
+        eh.acquilogger.info(self.__str__())
         eh.acquilogger.info('Kinetic acquisition started: ' + str(self.note.replace(" ", "_")))
         
         delaysToQueue = [0] + self.delayTimes

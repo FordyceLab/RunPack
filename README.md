@@ -31,6 +31,6 @@ Coming Soon!
 
 ## Dev Notes:
 - Check package requirements: use `pipreqs` on directory containing runpack 
-- Install: `pip2 install -e git+https://github.com/FordyceLab/RunPack.git#egg=runpack`
+- Install: `pip install -e git+https://github.com/FordyceLab/RunPack.git#egg=runpack`
     + Note `-e` will make package editable
 - Register venv with Jupyter: `python -m ipykernel install --user --name=runpack`

@@ -180,7 +180,7 @@ def scan(data_dir, channelsExposures, dname, note, position_list, wrappingFolder
     
     
     scanRecordDF = pd.DataFrame(scanRecord)
-    if imaging_record:
+    if write_imaging_record:
         imageRecordsPath = os.path.join(eh.rootPath, 'imaging.csv')
         imageRecordExists = os.path.isfile(imageRecordsPath)
         with open(imageRecordsPath, 'a+') as ir:
@@ -189,7 +189,7 @@ def scan(data_dir, channelsExposures, dname, note, position_list, wrappingFolder
             else:
                 scanRecordDF.to_csv(ir, header=True)
 
-    if imaging_record_returned:
+    if return_imaging_record:
         return scanRecordDF
 
 

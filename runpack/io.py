@@ -32,6 +32,7 @@ class ExperimentalHarness:
     acquilogger = None
     userlogger = None
     rootPath = ''
+    config = None
     experimentalDescription = ''
     assayTimes = {}
     imagingRecord = pd.DataFrame()
@@ -425,10 +426,12 @@ class HardwareInterface:
 
         with open(c) as config_source:
             HardwareInterface.config = json.load(config_source)['Hardware']
+            ExperimentalHarness.config = json.load(config_source)['Software']
         hc = HardwareInterface.config
         mm = hc['mm']
         wago = hc['wago']
         th = hc['temp_hum']
+        
         HardwareInterface.mm_version = mm['version']
         HardwareInterface.mmcfg = mm['config_loc']
         HardwareInterface.coreTimeout
@@ -437,6 +440,8 @@ class HardwareInterface:
         HardwareInterface.manifoldOffset = wago['offset']
         HardwareInterface.filterBlockName = mm['filterblock_name']
         HardwareInterface.channels = mm['channels']
+
+        ExperimentalHarness.assayTimes = ExperimentalHarness.addAssayTimings(ExperimentalHarness.config['assay_timings'])
 
 
     def toString(self):

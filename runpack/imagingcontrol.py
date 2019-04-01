@@ -13,6 +13,7 @@ import os
 import copy
 import time
 import datetime
+import numpy as np
 import pprint as pp
 import pandas as pd
 from PIL import Image
@@ -86,7 +87,7 @@ def startHardwareQueue():
         scan(*args, **kwargs)
 
 
-def scan(data_dir, channelsExposures, dname, note, position_list, wrappingFolder = False, imaging_report = True, imaging_record = True):
+def scan(data_dir, channelsExposures, dname, note, position_list, wrappingFolder = False, write_imaging_record = True, return_imaging_record = False):
     """
     Raster image acquisition. Acquires images in a raster patern and saves the results.
     Writes metadata to the acquired images.
@@ -177,16 +178,18 @@ def scan(data_dir, channelsExposures, dname, note, position_list, wrappingFolder
     eh.acquilogger.info(endMessage)
     bringHome(position_list)
     
-    if imaging_report:
-        scanRecordDF = pd.DataFrame(scanRecord)
-        if imaging_record:
-            imageRecordsPath = os.path.join(eh.rootPath, 'imaging.csv')
-            imageRecordExists = os.path.isfile(imageRecordsPath)
-            with open(imageRecordsPath, 'a+') as ir:
-                if imageRecordExists:
-                    scanRecordDF.to_csv(ir, header=False)
-                else:
-                    scanRecordDF.to_csv(ir, header=True)
+    
+    scanRecordDF = pd.DataFrame(scanRecord)
+    if imaging_record:
+        imageRecordsPath = os.path.join(eh.rootPath, 'imaging.csv')
+        imageRecordExists = os.path.isfile(imageRecordsPath)
+        with open(imageRecordsPath, 'a+') as ir:
+            if imageRecordExists:
+                scanRecordDF.to_csv(ir, header=False)
+            else:
+                scanRecordDF.to_csv(ir, header=True)
+
+    if imaging_record_returned:
         return scanRecordDF
 
 

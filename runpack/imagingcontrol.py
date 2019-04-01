@@ -86,7 +86,7 @@ def startHardwareQueue():
         scan(*args, **kwargs)
 
 
-def scan(data_dir, channelsExposures, dname, note, position_list, wrappingFolder = False):
+def scan(data_dir, channelsExposures, dname, note, position_list, wrappingFolder = False, imaging_report = True, imaging_record = True):
     """
     Raster image acquisition. Acquires images in a raster patern and saves the results.
     Writes metadata to the acquired images.
@@ -104,11 +104,11 @@ def scan(data_dir, channelsExposures, dname, note, position_list, wrappingFolder
     """
 
     def makeDir(path):
-        if not os.isdir(outDir):
-            os.makedirs(outDir)
+        if not os.path.isdir(path):
+            os.makedirs(path)
     
-    messageItems = str(dname), str(channelsExposures), str(note.replace(' ', '_'))
-    startMessage = 'Started Scan of {}, channelsExposures = {}, note = {}'.format(messageItems)
+    messageItems = [str(dname), str(channelsExposures), str(note.replace(' ', '_'))]
+    startMessage = 'Started Scan of {}, channelsExposures = {}, note = {}'.format(*messageItems)
     eh.acquilogger.info(startMessage)
     
     if wrappingFolder:
@@ -129,8 +129,11 @@ def scan(data_dir, channelsExposures, dname, note, position_list, wrappingFolder
     if hi.temp:
 	   temp = hi.temp.getProbeTemp() # Get temperature for metadata
 	   hum = hi.temp.getHumidity() # Get humidity for metadata
-    
-    scanRecord = {startTime: {}}
+    else:
+        temp = 999.9
+        hum = 999.9
+
+    scanRecord = []
     for i in xrange(len(position_list)):
         si = str(i)
         x,y = position_list[['x','y']].iloc[i]
@@ -157,11 +160,11 @@ def scan(data_dir, channelsExposures, dname, note, position_list, wrappingFolder
                 frameInfo = '{{Channel: {}, Index:{}, Pos:({},{})}}'.format(channel, i, x, y)
                 frameTime = datetime.datetime.now().strftime("%Y-%m-%d %H:%M:%S")
 
-                recordLabels = ['raster_start_time', 'scan_params', 'channel', 'exposure', 'image_path', 'raster_index',
+                recordLabels = ['raster_start_time', 'scan_params', 'channel', 'exposure_ms', 'image_path', 'raster_index',
                                     'x', 'y', 'dname', 'frame_time', 'temperature', 'humidity', 'note','setup', 'experimental_desc']
                 recordFeatures = [startTime, channelsExposures, channel, exposure, imagePath,
                                     i, x, y, dname, frameTime, temp, hum, note, hi.setup, eh.experimentalDescription]
-                scanRecord[startTime][timestamp] = dict(zip(recordLabels, recordFeatures))
+                scanRecord.append(dict(zip(recordLabels, recordFeatures)))
                 
                 exifIDs = [37888, 37889, 33434, 37510, 270, 306]
                 exifValues = [temp, hum, exposure/1000.0, summary, frameInfo, frameTime]
@@ -173,9 +176,18 @@ def scan(data_dir, channelsExposures, dname, note, position_list, wrappingFolder
     endMessage = 'Completed Scan of {}, channelsExposures = {}, note = {}'.format(*messageItems)
     eh.acquilogger.info(endMessage)
     bringHome(position_list)
-
-    scanRecordDF = pd.from_dict(scanRecord, orient = 'index')
-    return scanRecordDF
+    
+    if imaging_report:
+        scanRecordDF = pd.DataFrame(scanRecord)
+        if imaging_record:
+            imageRecordsPath = os.path.join(eh.rootPath, 'imaging.csv')
+            imageRecordExists = os.path.isfile(imageRecordsPath)
+            with open(imageRecordsPath, 'a+') as ir:
+                if imageRecordExists:
+                    scanRecordDF.to_csv(ir, header=False)
+                else:
+                    scanRecordDF.to_csv(ir, header=True)
+        return scanRecordDF
 
 
 def bringHome(position_list):

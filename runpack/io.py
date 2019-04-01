@@ -215,6 +215,7 @@ class HardwareInterface:
     config = None
     mmcfg = None
     mm_version = None
+    setup = None
     valvemapPath = None
     manifoldAddress = None
     manifoldOffset = None
@@ -426,6 +427,7 @@ class HardwareInterface:
 
         with open(c) as config_source:
             HardwareInterface.config = json.load(config_source)['Hardware']
+        with open(c) as config_source:
             ExperimentalHarness.config = json.load(config_source)['Software']
         hc = HardwareInterface.config
         mm = hc['mm']
@@ -434,14 +436,15 @@ class HardwareInterface:
         
         HardwareInterface.mm_version = mm['version']
         HardwareInterface.mmcfg = mm['config_loc']
+        HardwareInterface.setup = str(hc['setup_id'])
         HardwareInterface.coreTimeout
         HardwareInterface.valvemapPath = str(wago['valvemap_path'])
         HardwareInterface.manifoldAddress = wago['address']
         HardwareInterface.manifoldOffset = wago['offset']
         HardwareInterface.filterBlockName = mm['filterblock_name']
-        HardwareInterface.channels = mm['channels']
+        HardwareInterface.channels = [str(c) for c in mm['channels']]
 
-        ExperimentalHarness.assayTimes = ExperimentalHarness.addAssayTimings(ExperimentalHarness.config['assay_timings'])
+        ExperimentalHarness.assayTimes = {str(k):v for k, v in ExperimentalHarness.config['assay_timings'].items()}
 
 
     def toString(self):

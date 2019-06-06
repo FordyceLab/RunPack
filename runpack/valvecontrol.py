@@ -1,9 +1,9 @@
 # title             : valvecontrol.py
-# description       : eMITOMI-specific utilities for experimental acquisition notebook
+# description       : Valve control for RunPack experimental acquisition
 # authors           : Daniel Mokhtari
 # credits           : Scott Longwell
 # date              : 20180520
-# version update    : 20190326
+# version update    : 20190605
 # version           : 0.1.1
 # usage             : With permission from DM
 # python_version    : 2.7
@@ -16,11 +16,13 @@ from runpack.io import HardwareInterface as hi
 from runpack.io import ExperimentalHarness as eh
 
 
-def launchGui():
-    """
-    Wrapper for AcqPack manifold-controlling widget
+################################################################################
 
-    Arguments:
+
+def launchGui():
+    """Wrapper for AcqPack manifold-controlling widget.
+
+    Args:
         None
 
     Returns:
@@ -30,13 +32,12 @@ def launchGui():
 
 
 def open(reference, valveName, logging = True):
-    """
-    Opens a valve.
+    """Opens a valve.
 
-    Arguments:
-        (str) reference:valvemap reference name
-        (str) valveName: Valve name as per valvemap
-        (bool) logging; flag to log valve state change
+    Args:
+        reference (str): valvemap reference name
+        valveName (str): Valve name as per valvemap
+        logging (bool); flag to log valve state change
     
     Returns:
         None
@@ -48,13 +49,12 @@ def open(reference, valveName, logging = True):
 
 
 def close(reference, valveName, logging = True):
-    """
-    Closes a valve.
+    """Closes a valve.
 
-    Arguments:
-        (str) reference:valvemap reference name
-        (str) valveName: Valve name as per valvemap
-        (bool) logging; flag to log valve state change
+    Args:
+        reference (str): valvemap reference name
+        valveName (str): Valve name as per valvemap
+        logging (bool); flag to log valve state change
     
     Returns:
         None
@@ -66,12 +66,13 @@ def close(reference, valveName, logging = True):
 
 
 def openValves(devices, valves, reference = hi.valveReferenceIndex, logging = True):  
-    """
-    Opens specified valves of specified devices. If one valve is given, that valve is opened on all devices.
+    """Opens specified valves of specified devices. 
 
-    Arguments:
-        (list) devices: list of devices (e.g. ['d1', 'd2', and 'd3'])
-        (list) valves: list of valves. (e.g. ['bb'] or ['bb, na, out'])
+    If one valve is given, that valve is opened on all devices.
+
+    Args:
+        devices (list): list of devices (e.g. ['d1', 'd2', and 'd3'])
+        valves (list): list of valves. (e.g. ['bb'] or ['bb, na, out'])
 
     Returns:
         None
@@ -87,12 +88,13 @@ def openValves(devices, valves, reference = hi.valveReferenceIndex, logging = Tr
 
 
 def closeValves(devices, valves, reference= hi.valveReferenceIndex, logging = True):
-    """
-    Closes specified valves of specified devices. If one valve is given, that valve is closed on all devices.
+    """Closes specified valves of specified devices. 
 
-    Arguments:
-        (list) devices: list of devices (e.g. ['d1', 'd2', and 'd3'])
-        (list) valves: list of valves. (e.g. ['bb'] or ['bb, na, out'])
+    If one valve is given, that valve is closed on all devices.
+
+    Args:
+        devices (list | tuple): list of devices (e.g. ['d1', 'd2', and 'd3'])
+        valves (list | tuple): list of valves. (e.g. ['bb'] or ['bb, na, out'])
 
     Returns:
         None
@@ -108,15 +110,18 @@ def closeValves(devices, valves, reference= hi.valveReferenceIndex, logging = Tr
 
 
 def returnToSafeState(devices, valves = 'all', reference = 'chip', logging = True):
-    """
-    Closes all valving (shuts all inlets/outlets, depresses buttons, sandwiches, and necks)
+    """Closes all valving of specified type
+
+    If valves = 'all', shuts all inlets/outlets, depresses buttons, sandwiches,
+    and necks
     
     Note: flowValves ['w','bb','na','ph','ext1','ext2','prot', 'hep','out','in']
           controlValves ['neck','b1','b2','s1','s2']
 
-    Arguments:
-        (list) devices: list of devices to return to safe state (name only, e.g. 'd1')
-        (str) valves: which valving to shut ('all', 'flow', or 'control')
+    Args:
+        devices (list | tuple): list of devices to return to safe state (name 
+            only, e.g. 'd1')
+        valves (str): which valving to shut ('all', 'flow', or 'control')
 
     Returns:
         None

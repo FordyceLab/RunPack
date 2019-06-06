@@ -1,9 +1,10 @@
 # title             : io.py
-# description       : Top-level classes for Jupyter-based experimental MicroManager imaging & WAGO valve control 
+# description       : Top-level classes for Jupyter-based experimental 
+#                       MicroManager imaging & WAGO valve control 
 # authors           : Daniel Mokhtari
 # credits           : 
 # date              : 20180520
-# version update    : 20190326
+# version update    : 20190605
 # version           : 0.1.1
 # usage             : With permission from DM
 # python_version    : 2.7
@@ -17,12 +18,14 @@ import logging
 import warnings
 import pandas as pd
 
+import visa
+
 from acqpack import Manifold
 from acqpack import utils as ut
 from acqpack import gui
 
-import visa
 
+################################################################################
 
 
 class ExperimentalHarness:
@@ -38,14 +41,15 @@ class ExperimentalHarness:
     imagingRecord = pd.DataFrame()
 
     def __init__(self, root, description, loggername = 'experiment'):
-        """
-        Experimental Harness constructor
+        """Experimental Harness constructor
+        
         TODO: refactor as parent class
 
-        Arguments:
+        Args:
             (str) root: experimental root path. Location where images will be written.
             (str) description: brterse exeperimental description
-            (str) loggername: custom name for the experimental logger. Will be propogated to the experimental log.
+            (str) loggername: custom name for the experimental logger. Will be 
+                propogated to the experimental log.
 
         Returns:
             None
@@ -59,10 +63,9 @@ class ExperimentalHarness:
 
 
     def addPositionList(self, dname, path):
-        """
-        Adds a MicroManager position list to the experimental harness
+        """Adds a MicroManager position list to the experimental harness
 
-        Arguments:
+        Args:
             (str) dname: device name ('d1' | 'd2' | 'd3')
             (str) path: path of the MicroManager position list (.pos file)
 
@@ -76,10 +79,9 @@ class ExperimentalHarness:
 
 
     def removePositionList(self, dname):
-        """
-        Removes a MicroManager position list from the experimental harness
+        """Removes a MicroManager position list from the experimental harness
 
-        Arguments:
+        Args:
             (str) dname: device name for harness to remove ('d1' | 'd2' | 'd3')
 
         Returns:
@@ -91,12 +93,12 @@ class ExperimentalHarness:
 
 
     def note(self, note, importance = 0):
-        """
-        Writes a custom note to the user logger of the given importance
+        """Writes a custom note to the user logger of the given importance
 
-        Arguments:
+        Args:
             (str) note: 
-            (int) importance: logging level. 0 = 'info', 1 = 'warning', 2 = 'error', 3 = 'critical' (0 | 1 | 2 | 3)
+            (int) importance: logging level. 0 = 'info', 1 = 'warning', 
+                2 = 'error', 3 = 'critical' (0 | 1 | 2 | 3)
 
         Returns:
             None
@@ -113,10 +115,12 @@ class ExperimentalHarness:
 
 
     def initializeLogger(self, name):
-        """
-        Initializes the loggers, including a valve logger, script logger, acquisition logger, and user logger.
+        """Initializes the loggers
 
-        Arguments:
+        These loggers include a valve logger, script logger, acquisition 
+        logger, and user logger.
+
+        Args:
             (str) name: log file name
 
         Return:
@@ -145,11 +149,11 @@ class ExperimentalHarness:
 
 
     def addAssayTimings(self, assayTimesDict):
-        """
-        Adds a dictionary of assay kinetic delay timings to the experimental harness.
+        """Adds a dictionary of assay kinetic delay timings to the experimental harness.
 
-        Arguments:
-            (dict) assayTimesDict: dicitonary of assay timings of the form {'name': [dt0, dt1, ..., dtf], ...}
+        Args:
+            (dict) assayTimesDict: dicitonary of assay timings of the form 
+                {'name': [dt0, dt1, ..., dtf], ...}
 
         Returns:
             None
@@ -163,11 +167,11 @@ class ExperimentalHarness:
 
 
     def removeAssayTimings(self, assayTimesKeys):
-        """
-        Removes a list of assay timings from the experimental harness
+        """Removes a list of assay timings from the experimental harness
 
-        Arguments:
-            (list) assayTimesKeys: list of assay timings keys to remove from the experimetnal harness
+        Args:
+            (list) assayTimesKeys: list of assay timings keys to remove from 
+                the experimetnal harness
 
         Returns:
             None
@@ -183,14 +187,13 @@ class ExperimentalHarness:
 
 
     def toString(self):
-        """
-        A string description of the ExperimentalHarness
+        """A string description of the ExperimentalHarness
 
-        Arguments:
+        Args:
             None
 
         Returns:
-            (str) Description of the experimental harness description
+            str: Description of the experimental harness description
         """
         stringVals = {'rp': ExperimentalHarness.rootPath, 'ed': ExperimentalHarness.experimentalDescription, 
                         'pl': ExperimentalHarness.posLists.keys(), 'at': ExperimentalHarness.assayTimes}
@@ -232,11 +235,11 @@ class HardwareInterface:
 
 
     def __init__(self, loadAllHardware = True, configLoc = ''):
-        """
-        Hardware interface for control of camera/microscope, valving, and sensors
+        """Hardware interface for control of camera/microscope, valving, and sensors
+        
         TODO: refactor as parent class
 
-        Arguments:
+        Args:
             (bool) loadAllHardware: flag to load all hardware available
             (str) configLog: path of JSON configuration file
 
@@ -252,12 +255,13 @@ class HardwareInterface:
 
 
     def initializeHardware(self, subset = 'all'):
-        """
-        Initializes control of the hardware by adding it to the hardware interface. 
+        """Initializes control of the hardware by adding it to the hardware interface. 
+        
         Possible subsets are 'all', 'manifold', 'microscope', and 'temperature'.
 
-        Arguments:
-            (str) subset: subset of hardware to initialize ('all' | 'manifold' | 'microscope' | 'temperature'.)
+        Args:
+            subset (str): subset of hardware to initialize ('all' | 'manifold' 
+                | 'microscope' | 'temperature'.)
 
         Returns:
             None
@@ -280,10 +284,9 @@ class HardwareInterface:
 
 
     def intializeManifoldControl(self):
-        """
-        Initialize connection to WAGO controller and manifold.
+        """Initialize connection to WAGO controller and manifold.
 
-        Arguments:
+        Args:
             None
 
         Returns:
@@ -297,10 +300,9 @@ class HardwareInterface:
 
 
     def assignValvetypes(self):
-        """
-        Assigns valves in the valvemap to type 'flow' or 'control' and adds to HardwareInterface.
+        """Assigns valves in the valvemap to type 'flow' or 'control' and adds to HardwareInterface.
         
-        Arguments:
+        Args:
             None
 
         Returns:
@@ -315,10 +317,9 @@ class HardwareInterface:
 
 
     def initializeMicroManager(self):
-        """
-        Instantiates a MMCore instance, loads the default hardware configuration, and sets the default timeout.
+        """Instantiates a MMCore instance
 
-        Arguments:
+        Args:
             None
 
         Returns:
@@ -338,10 +339,9 @@ class HardwareInterface:
     
 
     def initializeTempProbe(self):
-        """
-        Initializes connection to the temperature probe
+        """Initializes connection to the temperature probe
 
-        Arguments:
+        Args:
             None
 
         Returns:
@@ -355,13 +355,13 @@ class HardwareInterface:
     
 
     def setScopeConfig(self, exposure = None, binning = None, channel = None):
-        """
-        Sets the camera configuration to the specified exposure, binning, and channel
+        """Sets the camera configuration to the specified exposure, binning, and channel
 
-        Arguments:
-            (int) exposure: camera exposure time (ms)
-            (str) binning: camera binning ('1x1' | '2x2' | '3x3' | '4x4 | '6x6')
-            (str) channel: camera channel, as per Channel preset group (eMITOMI defaults: 1pbp, 2bf, 3dapi, 4egfp, 5cy5)
+        Args:
+            exposure (int): camera exposure time (ms)
+            binning (str): camera binning ('1x1' | '2x2' | '3x3' | '4x4 | '6x6')
+            channel (str): camera channel, as per Channel preset group (eMITOMI 
+                defaults: 1pbp, 2bf, 3dapi, 4egfp, 5cy5)
 
         Returns:
             None
@@ -381,10 +381,9 @@ class HardwareInterface:
 
 
     def unloadHardware(self):
-        """
-        Unloads all hardware from the HardwareInterface
+        """Unloads all hardware from the HardwareInterface
 
-        Arguments:
+        Args:
             None
 
         Returns:
@@ -414,12 +413,13 @@ class HardwareInterface:
 
     
     def loadConfig(self, c):
-        """
-        Loads a JSON experimental configuration. Experimental configuration specifies hardware details
-        and ExperimentalHarness initial values.
+        """Loads a JSON experimental configuration. 
+        
+        Experimental configuration specifies hardware details and 
+        ExperimentalHarness initial values.
 
-        Arguments:
-            (str) c: config path
+        Args:
+            c (str): config path
         
         Returns:
             None
@@ -448,14 +448,13 @@ class HardwareInterface:
 
 
     def toString(self):
-        """
-        A string description of the HardwareInterface
+        """A string description of the HardwareInterface
 
-        Arguments:
+        Args:
             None
 
         Returns:
-            (str) Description of the experimental harness description
+            str: Description of the experimental harness description
         """
 
         stringVals = {'vm': HardwareInterface.valvemapPath, 'ma': HardwareInterface.manifoldAddress, 
@@ -475,12 +474,11 @@ class HardwareInterface:
 
 class TemperatureProbe:
     def __init__(self, vid = '0x1313', pid = '0x80F8'):
-        """
-        Temperature Probe object for connection and query of Thorlabs TSP01 temperature/humidity probe
+        """Temperature Probe object for connection and query of Thorlabs TSP01
 
-        Arguments:
-            (str) vid: Vendor ID (hex)
-            (str) pid: Product ID (hex)
+        Args:
+            vid (str): Vendor ID (hex)
+            pid (str): Product ID (hex)
 
         Returns:
             None
@@ -494,7 +492,7 @@ class TemperatureProbe:
         """
         Opens Thorlabs TSP01 temperature/humidity probe as pyvisa resource
 
-        Arguments:
+        Args:
             None
 
         Returns:
@@ -509,40 +507,37 @@ class TemperatureProbe:
 
 
     def getDeviceInfo(self):
-        """
-        Queries probe IDN
+        """Queries probe IDN
 
-        Arguemnts:
+        Args:
             None
 
         Returns:
-            (dict) A dictionary of device ID fields to values 
+            dict: A dictionary of device ID fields to values 
         """
         fields = ['Model', 'SerialNo', 'FirmwareRev']
         return dict(zip(fields, self.inst.query('*IDN?').split(',')))
 
 
     def listVISAResources(self):
-        """
-        Lists available VISA resources
+        """Lists available VISA resources
 
-        Arguments:
+        Args:
             None
 
         Returns:
-            (list) Connected VISA resources
+            list: Connected VISA resources
         """
         return self.rm.list_resources()
 
 
     def getOnboardTemp(self):
-        """
-        Query onboard temperature (celcius)
+        """Query and return onboard temperature (celcius)
 
-        Arguments:
+        Args:
             None
         Return:
-            (float) Onboard temperature (celcius)
+            float: Onboard temperature (celcius)
         """
 
         try:
@@ -553,13 +548,12 @@ class TemperatureProbe:
         return temp
 
     def getProbeTemp(self):
-        """
-        Query outboard temperature (celcius)
+        """Query and return outboard temperature (celcius)
 
-        Arguments:
+        Args:
             None
         Return:
-            (float) Outboard temperature (celcius)
+            float: Outboard temperature (celcius)
         """
 
         try:
@@ -571,13 +565,12 @@ class TemperatureProbe:
 
 
     def getHumidity(self):
-        """
-        Query onboard humidity (realtive %)
+        """Query and return onboard humidity (realtive %)
 
-        Arguments:
+        Args:
             None
         Return:
-            (float) Onboard humidity (%)
+            float: Onboard humidity (%)
         """
         try:
             hum = float(self.inst.query('SENS2:HUM:DATA?'))
@@ -588,10 +581,10 @@ class TemperatureProbe:
 
 
     def launchGUI(self, static_window = None):
+        """TODO: Implement Jupyter widget for real-time temperature/humidity tracking
+        
         """
-        TODO: Implement Jupyter widget for real-time temperature/humidity tracking
-        """
-        return
+        raise NotImplementedError('Real time temperature gui not implemented')
 
 
     def __del__(self):

@@ -1,9 +1,9 @@
 # title             : eMITOMIprotocols.py
-# description       : eMITOMI-specific protocols for experimental acquisition notebook
+# description       : HT-MEK specific protocols for experimental acquisition
 # authors           : Daniel Mokhtari
 # credits           : Craig Markin
 # date              : 20180520
-# version update    : 20190326
+# version update    : 20190605
 # version           : 0.1.1
 # usage             : With permission from DM
 # python_version    : 2.7
@@ -22,22 +22,30 @@ from runpack.io import HardwareInterface as hi
 from runpack.io import ExperimentalHarness as eh
 
 
+################################################################################
+
 
 def patternDevices(devices, inletNames = None, blocknames = None):
-    """
-    Performs button patterning on passed list of devices assuming standard input line configuration 
-    (bBSA in 'bb', NeutrAvidin in 'NA', antibody in 'pHis', and PBS in 'Hepes').
-    Be sure to attach a "waste tail" to the device, and open all lines to pressure before executing.
+    """Performs device surface patterning
 
-    Custom inlet names should be of the form {'na': [na_renamed], 'ph': [ph_renamed], 'bb': [bb_renamed], 'hep': [bb_renamed]}
+    Performs patterning on passed list of devices assuming standard input line 
+    configuration (bBSA in 'bb', NeutrAvidin in 'NA', antibody in 'pHis', and 
+    PBS in 'Hepes'). Be sure to attach a "waste tail" to the device, and open 
+    all lines to pressure before executing.
+
+    Custom inlet names should be of the form {'na': [na_renamed], 'ph': 
+    [ph_renamed], 'bb': [bb_renamed], 'hep': [bb_renamed]}
+    
     Custom blocknames should be of the form ['bn1', 'bn2', 'bn3',..., 'bnn']
     Blocks opening/closing will occur with inlet opening/closing
 
-    Arguments:
-        (list) devices: list of devices to be patterned, lowercase (e.g. ['d1', 'd2', and 'd3'])
-        (dict) inletNames: remapped inlet names containing precisely {'w':[w_renamed], 'na': [na_renamed], 
-            'ph': [ph_renamed], 'bb': [bb_renamed], 'hep': [bb_renamed]}. Should not contain trailing device index.
-        (list) blocknames: block control valve names of the form ['c1', 'c2', ..., 'c3']. 
+    Args:
+        devices (list): list of devices to be patterned, lowercase (e.g. 
+            ['d1', 'd2', and 'd3'])
+        inletNames (dict): remapped inlet names containing precisely {'w':[
+            w_renamed], 'na': [na_renamed], 'ph': [ph_renamed], 
+            'bb': [bb_renamed], 'hep': [bb_renamed]}. Should not contain trailing index.
+        blocknames (list): block control valve names of the form ['c1', 'c2', ..., 'c3']. 
             Valvenames should not containing trailing device index.
 
     Returns:
@@ -159,18 +167,19 @@ def patternDevices(devices, inletNames = None, blocknames = None):
 
 
 def performSDSWash(deviceNames, channelsExposures, sdsInputLines, bufferInputLines):
-    """
-    SDS pH 6.0 MES wash via standard protocol of four 5-minute pulses with 10-min post-pulse recovery.
+    """SDS pH 6.0 MES wash 
+
+    Standard protocol of four 5-minute pulses with 10-min post-pulse recovery.
     Do not inlcude trailing device nuymber in input line names
     Protocol Time: ~1.0h, 
     Rev. 102817, DM
     
     
-    Arguments:
-        (list) deviceNames: list of devices for which to perform SDS washes (e.g., ['d1', 'd2', 'd3'])
-        (dict) channelsExposures: Dictionary of channels mapped to exposures (e.g., {'2bf':[50, 500], '1pbp':[100, 200]})
-        (list) sdsInputLines: names of SDS input ports (without trailing device number)
-        (list) bufferInputLines: names of buffer input ports (without trailing device number)
+    Args:
+        deviceNames (list): list of devices for which to perform SDS washes (e.g., ['d1', 'd2', 'd3'])
+        channelsExposures (dict): Dictionary of channels mapped to exposures (e.g., {'2bf':[50, 500], '1pbp':[100, 200]})
+        sdsInputLines (list): names of SDS input ports (without trailing device number)
+        bufferInputLines (list): names of buffer input ports (without trailing device number)
 
     Returns:
         None
@@ -228,15 +237,16 @@ def performSDSWash(deviceNames, channelsExposures, sdsInputLines, bufferInputLin
 
 def flowSubstrateStartAssay(deviceName, substrateInput, KineticAcquisition, equilibrationTime = 600, treeFlushTime = 20, 
     postEquilibrationImaging = False, performImaging = True, postEquilibImageChanExp = {'4egfp':[500]}, scanQueueFlag = False):
-    """
-    Performs a standard enzyme assay. Flows substrate, exposes buttons and closes sandwiches, 
+    """Performs a standard enzyme turnover assay. 
+
+    Flows substrate, exposes buttons and closes sandwiches, 
     performs imaging at specified timesteps
     Rev. 102817, DM
     
-    Arguements:
-        (str) substrateInput: valve name of input
-        (str) deviceName: name of device
-        (int) equilibrationTime: time to flush device before assay
+    Args:
+        substrateInput (str): valve name of input
+        deviceName (str): name of device
+        equilibrationTime (int): time to flush device before assay
         
     Returns:
         None
@@ -285,16 +295,16 @@ def flowSubstrateStartAssay(deviceName, substrateInput, KineticAcquisition, equi
 
 
 def measureStandardCurve(devices, devicesInputs, concentrations, channelsExposures, standardType, treeFlushTime = 15, equilibrationTime = 480):
-    """
-    With leaving group lines pre-attached to devices, sequentially flows substrates and images
-    to obtain a series of standard curve images.
+    """Sequentially flows fluorogenic product and images with "buttons up"
+
+    Leaving group (product lines) lines pre-attached to devices
     
-    Arguemnts:
-        (list) devices: devices to be imaged
-        (list) concentrations: concentrations (with units) to be flowed and quantified (i.e., [c1(uM), c2(uM),..., cn(uM)])
-        (dict) devicesInputs: {d1: {concentration1: input1, concentration2: input2}, d2: {concentration1: input1, concentration2: input2}}
-        (dict) channelsExposures: Dictionary of channels mapped to exposures (e.g., {'2bf':[50, 500], '1pbp':[100, 200]})
-        (str) standardType: keyword descriptor for standard (e.g., cMU, FL, or PBP)
+    Args:
+        devices (list): devices to be imaged
+        concentrations (list): concentrations (with units) to be flowed and quantified (i.e., [c1(uM), c2(uM),..., cn(uM)])
+        devicesInputs (dict): {d1: {concentration1: input1, concentration2: input2}, d2: {concentration1: input1, concentration2: input2}}
+        channelsExposures (dict): Dictionary of channels mapped to exposures (e.g., {'2bf':[50, 500], '1pbp':[100, 200]})
+        standardType (str): keyword descriptor for standard (e.g., cMU, FL, or PBP)
         
     Returns: 
         None
@@ -325,22 +335,30 @@ def measureStandardCurve(devices, devicesInputs, concentrations, channelsExposur
 
 def flowSubstratesStartConcurrentAssays(deviceNames, substrateInputs, KineticAcquisitions, data_dir, pos_lists, 
     equilibrationTime = 480, treeFlushTime = 20):
-    """
-    Concurrently executes two assays (riffled, but executed concurrently, and with the same timepoints). Best for use in control assays for multiple devices.
+    """Concurrently executes two assays 
+
+    Assays are riffled, but executed concurrently, and with the same timepoints.
+    Best for use in control assays for multiple devices.
     Rev. 103017, DM
    
-    Arguements:
-        (list) deviceNames: names of devices for which to run assays, in numerical device order (e.g., ['d1', 'd2'])
-        (list) substrateInputs: names of input lines (NOT CONTAINING THE TRAILING DEVICE NUMBER) containing substrates to assay, in numerical device order (e.g., [prot, ext1])
-        (list) KineticAcquisitions: list of KineticAcquisition objects containing acquisition parameters. Note that 'd1' KineticAcquisition timings will be used to drive both devices
-        (str) data_dir: path of root data directory
-        (list) pos_lists: list of device-specific position lists, in numerical device order (e.g., [posLists['d1'], posLists['d2']])
-        (int) equilibrationTime: time to flow substrate through device before assay start (s)
-        (int) treeFlushTime: time to flow substrate through inlet tree before device equilibration (s)
+    Args:
+        deviceNames (list): names of devices for which to run assays, in 
+            numerical device order (e.g., ['d1', 'd2'])
+        substrateInputs (list): names of input lines (NOT CONTAINING THE 
+            TRAILING DEVICE NUMBER) containing substrates to assay, in 
+            numerical device order (e.g., [prot, ext1])
+        KineticAcquisitions (list): list of KineticAcquisition objects 
+            containing acquisition parameters. Note that 'd1' KineticAcquisition timings will be used to drive both devices
+        data_dir (str): path of root data directory
+        pos_lists (list): list of device-specific position lists, in 
+            numerical device order (e.g., [posLists['d1'], posLists['d2']])
+        equilibrationTime (int): time to flow substrate through device before 
+            assay start (s)
+        treeFlushTime (int): time to flow substrate through inlet tree before 
+            device equilibration (s)
 
     Returns:
         None
-    
     """
 
     eh.scriptlogger.info('**Flowing substrate, starting concurrent for devices {} in lines {}' + str(deviceNames) + ' in lines ' + str(substrateInputs))
@@ -443,18 +461,19 @@ def flowSubstratesStartConcurrentAssays(deviceNames, substrateInputs, KineticAcq
     
 
 def startConcurrentImaging(deviceNames, KineticAcquisitions, data_dir, pos_lists):
-    """
-    Concurrently executes imaging for two devices.
+    """Concurrently executes imaging for two devices.
    
-    Arguements:
-        (list) deviceNames: names of devices for which to run assays, in numerical device order (e.g., ['d1', 'd2'])
-        (list) KineticAcquisitions: list of KineticAcquisition objects containing acquisition parameters. Note that 'd1' KineticAcquisition timings will be used to drive both devices
-        (str) data_dir: path of root data directory
-        (list) pos_lists: list of device-specific position lists, in numerical device order (e.g., [posLists['d1'], posLists['d2']])
+    Args:
+        deviceNames (list): names of devices for which to run assays, in 
+            numerical device order (e.g., ['d1', 'd2'])
+        KineticAcquisitions (list): list of KineticAcquisition objects 
+            containing acquisition parameters. Note that 'd1' KineticAcquisition timings will be used to drive both devices
+        data_dir (str): path of root data directory
+        pos_lists (list): list of device-specific position lists, in numerical 
+            device order (e.g., [posLists['d1'], posLists['d2']])
 
     Returns:
         None
-    
     """
 
     # Name the kinetic acquisitions and directories
@@ -508,6 +527,10 @@ def startConcurrentImaging(deviceNames, KineticAcquisitions, data_dir, pos_lists
 
 
 def makeAssayTimings(numLinearPoints = 5, totalPoints = 15, scanTime = 90, totalTime = 3600):
+    """
+
+
+    """
     logPoints = totalPoints - numLinearPoints
     baseTimes = []
     pointDensity = 1
@@ -526,6 +549,10 @@ def makeAssayTimings(numLinearPoints = 5, totalPoints = 15, scanTime = 90, total
 
 
 def flushInletTree(deviceNames, inputInlet, vacantInlets, flushTime):
+    """
+
+
+    """
     
     # Close all the inlets AND the tree inlet (make no assumptions)
     allInputs = ['hep', 'prot', 'ext2', 'ext1', 'ph', 'na', 'bb', 'w']
@@ -557,7 +584,8 @@ def performGFPTitration(expObject, deviceName, channelsExposures, channelsExposu
     inletTreeFlushTime = 30, preEquilibrationFlushTime = 600, stepUpEquilibrationTime = 360, eGFPTitrationBindingTimes = [], scanTime = 90, numTitrationTimepoints = 10):
     """Performs a GFP titration experiment.
     Starting State: Chip Patterned, Buttons Down (protected)
-    Reagent Lines: 1x MOPS reaction buffer, 3nM or 5nM eGFP+2% BSA in 1x reaction buffer 
+    Reagent Lines: 1x MOPS reaction buffer (with Zn2+), 3nM or 5nM eGFP+2% BSA 
+        in 1x reaction buffer (200uL is sufficient)
 
     Experimental Description________________________________________
     1. Close valving and single scan in GFP (pre-assay background)
@@ -586,25 +614,30 @@ def performGFPTitration(expObject, deviceName, channelsExposures, channelsExposu
     6. Post-Titration Buffer Flush and Imaging
     _______________________________________________________________
 
-    Arguments:
-        (eh.ExperimentalHarness) expObject: Experimental Harness Object
-        (str) deviceName: deviceName (i.e., 'd1', 'd2', 'd3')
-        (dict) channelsExposures: For final timepoints (endpoints). Dictionary of channels mapped to exposures (e.g., {'2bf':[50, 500], '1pbp':[100, 200]})
-        (dict) channelsExposureTimecourse: For all timecourses, typically with reduced exposure times to limit time for assay. 
+    Args:
+        expObject (eh.ExperimentalHarness): Experimental Harness Object
+        deviceName (str): deviceName (i.e., 'd1', 'd2', 'd3')
+        channelsExposures (dict): For final timepoints (endpoints). Dictionary 
+            of channels mapped to exposures (e.g., {'2bf':[50, 500], '1pbp':[100, 200]})
+        channelsExposureTimecourse (dict): For all timecourses, typically with 
+            reduced exposure times to limit time for assay. 
             Dictionary of channels mapped to exposures (e.g., {'2bf':[50, 500], '1pbp':[100, 200]})
-        (str) eGFPInput: full name of 5nM eGFP input line (e.g., prot1, ext21, ...)
-        (str) bufferInput: full name of washing buffer input line (e.g., hep1, hep2, ...)
-        (int) numPreEquilibriumSteps: number of wall-binding pre-equilibration steps to perform
-        (int) inletTreeFlushTime: time (seconds) to perform all inlet tree flushes
-        (int) preEquilibrationFlushTime: time (seconds) to flow eGFP, and then Buffer, in wall-binding steps
-        (int) stepUpEquilibrationTime: time (seconds) to flow eGFP prior to each titration binding step
-        (list) eGFPTitrationBindingTimes: list of total times to bind, in temporal order
-        (int) scanTime: estimated length of a set of scans for channelsExposures
-        (int) numTitrationTimepoints: number of kinetic timepoints to obtain for each eGFP binding titration step, spanning time given in eGFPTitrationBindingTimes
+        eGFPInput (str): full name of 5nM eGFP input line (e.g., prot1, ext21, ...)
+        bufferInput (str): full name of washing buffer input line (e.g., hep1, hep2, ...)
+        numPreEquilibriumSteps (int): number of wall-binding pre-equilibration 
+            steps to perform
+        inletTreeFlushTime (int): time (seconds) to perform all inlet tree flushes
+        preEquilibrationFlushTime (int): time (seconds) to flow eGFP, and then 
+            Buffer, in wall-binding steps
+        stepUpEquilibrationTime (int): time (seconds) to flow eGFP prior to each
+            titration binding step
+        eGFPTitrationBindingTimes (list): list of total times to bind, in temporal order
+        scanTime (int): estimated length of a set of scans for channelsExposures
+        numTitrationTimepoints (int): number of kinetic timepoints to obtain for
+            each eGFP binding titration step, spanning time given in eGFPTitrationBindingTimes
 
     Returns:
         None
-
     """
 
     inputs = {'hep', 'prot', 'ext2', 'ext1', 'ph', 'na', 'bb', 'w'}

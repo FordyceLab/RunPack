@@ -1,20 +1,18 @@
 # title             : imagingcontrol.py
-# description       : Standard MITOMI Imaging Functions and Classes
+# description       : Imaging and stage control for RunPack experimental acquisition
 # authors           : Daniel Mokhtari, Scott Longwell
 # credits           : 
 # date              : 20180520
-# version update    : 20190326
+# version update    : 20190605
 # version           : 0.1.1
 # usage             : With permission from DM
 # python_version    : 2.7
 
 
 import os
-import copy
 import time
 import datetime
 import numpy as np
-import pprint as pp
 import pandas as pd
 from PIL import Image
 from Queue import Queue
@@ -25,20 +23,21 @@ from runpack.io import HardwareInterface as hi
 from runpack.io import ExperimentalHarness as eh
 
 
+################################################################################
+
 
 hardwareQueue = Queue()
 hardwareBlockingFlag = True
 hardwareState = 0 #State: 0 = Resting, 1 = One Queue Complete, 2 = Both Complete
 
 def snap(show = True, vmin = 0, vmax = 65535, figsize = (4, 4)):
-    """
-    Snaps an image and returns the resulting image array.
+    """Snaps an image and returns the resulting image array.
 
-    Arguments:
-        (bool) show: flag to show image
-        (int) vmin: threshold minimum
-        (int) vmax: threshold max
-        (tuple) figsize: matplotlib image figure size
+    Args:
+        show (bool): flag to show image
+        vmin (int): threshold minimum
+        vmax (int): threshold max
+        figsize (tuple): matplotlib image figure size
 
     Returns:
         None
@@ -56,11 +55,11 @@ def snap(show = True, vmin = 0, vmax = 65535, figsize = (4, 4)):
 
 
 def live():
-    """
-    Wrapper for acqpack.gui.video() video acquisition function.
-    # TODO: Enable live video saving to disk
+    """Wrapper for acqpack.gui.video() video acquisition function.
+    
+    TODO: Enable live video saving to disk
 
-    Arguments:
+    Args:
         None
 
     Returns:
@@ -71,10 +70,9 @@ def live():
 
 
 def startHardwareQueue():
-    """
-    Start the hardware job queue
+    """Start the hardware job queue
 
-    Arguments:
+    Args:
         None
 
     Returns:
@@ -87,21 +85,24 @@ def startHardwareQueue():
         scan(*args, **kwargs)
 
 
-def scan(data_dir, channelsExposures, dname, note, position_list, wrappingFolder = False, write_imaging_record = True, return_imaging_record = False):
-    """
-    Raster image acquisition. Acquires images in a raster patern and saves the results.
+def scan(data_dir, channelsExposures, dname, note, position_list, wrappingFolder = False, 
+            write_imaging_record = True, return_imaging_record = False):
+    """Rastered image acquisition. 
+    
+    Acquires images in a raster patern and saves the results.
     Writes metadata to the acquired images.
     
-    Arguements:
-        (str) data_dir: root directory of image acquisitions
-        (dict) channelsExposure: Dictionary of channels mapped to exposures (e.g., {'2bf':[50, 500], '1pbp':[100, 200]})
-        (str) dname: device name ('d1' | 'd2' |'d3')
-        (str) note: Scan note, to be used in the image filename
-        (pandas.DataFrame) position_list: stage xy position list
-        (bool) wrappingFolder: flag to wrap acquistions inside another directory of name notes
+    Args:
+        data_dir (str): root directory of image acquisitions
+        channelsExposure (dict): Dictionary of channels mapped to exposures 
+            (e.g., {'2bf':[50, 500], '1pbp':[100, 200]})
+        dname (str): device name ('d1' | 'd2' |'d3')
+        note (str): Scan note, to be used in the image filename
+        position_list (pd.DataFrame): stage xy position list
+        wrappingFolder (bool): flag to wrap acquistions inside another directory of name notes
         
     Returns:
-        (pd.DataFrame) Pandas dataframe with a summary of the image raster
+        pd.DataFrame: Pandas dataframe with a summary of the image raster
     """
 
     def makeDir(path):
@@ -161,8 +162,10 @@ def scan(data_dir, channelsExposures, dname, note, position_list, wrappingFolder
                 frameInfo = '{{Channel: {}, Index:{}, Pos:({},{})}}'.format(channel, i, x, y)
                 frameTime = datetime.datetime.now().strftime("%Y-%m-%d %H:%M:%S")
 
-                recordLabels = ['raster_start_time', 'scan_params', 'channel', 'exposure_ms', 'image_path', 'raster_index',
-                                    'x', 'y', 'dname', 'frame_time', 'temperature', 'humidity', 'note','setup', 'experimental_desc']
+                recordLabels = ['raster_start_time', 'scan_params', 'channel', 
+                                'exposure_ms', 'image_path', 'raster_index',
+                                'x', 'y', 'dname', 'frame_time', 'temperature', 
+                                'humidity', 'note','setup', 'experimental_desc']
                 recordFeatures = [startTime, channelsExposures, channel, exposure, imagePath,
                                     i, x, y, dname, frameTime, temp, hum, note, hi.setup, eh.experimentalDescription]
                 scanRecord.append(dict(zip(recordLabels, recordFeatures)))
@@ -194,11 +197,10 @@ def scan(data_dir, channelsExposures, dname, note, position_list, wrappingFolder
 
 
 def bringHome(position_list):
-    """
-    Brings the stage to its origin, the "home" position
+    """Brings the stage to its origin, the "home" position
 
-    Arguments:
-        (pd.DataFrame) position_list: xy-stage position list
+    Args:
+        position_list (pd.DataFrame): xy-stage position list
 
     Returns:
         None
@@ -221,11 +223,11 @@ class KineticAcquisition():
         """
         Given a list of delay times (in seconds), calculates the summed time elapsed from a reference time.
         
-        Arguments:
+        Args:
             None
             
         Returns:
-            (list) List of summed delays from a common reference time (0)
+            list: List of summed delays from a common reference time (0)
         
         """
         referencedDelayTimes = [0]+self.delayTimes
@@ -233,14 +235,13 @@ class KineticAcquisition():
 
 
     def __str__(self):
-        """
-        Prints and returns a string representation of the kinetic acquisition parameters.
+        """Prints and returns a string representation of the kinetic acquisition parameters.
     
-        Arguments:
+        Args:
             None
 
         Returns:
-            (str) KineticAcquisition parameters 
+            str: KineticAcquisition parameters 
         """
         
         paramVals = [self.device, self.channelsExposures, str(self.absTimes), str(self.delayTimes), self.note]
@@ -250,14 +251,12 @@ class KineticAcquisition():
 
 
     def startAssay(self, data_dir, pos_list, scanQueueFlag = False):
-        """
-        Brings the stage home, schedules the scans, then starts the image acquisitions
-        # TODO: take returned scanrecord from scan function, generate pandas DF, 
+        """Brings the stage home, schedules the scans, then starts the image acquisitions
 
-        Arguments:
-            (str) data_dir: directory to write image folder
-            (pd.DataFrame) post_list: position list
-            (bool) scanQueueFlag: flag to add scan to the common scan queue
+        Args:
+            data_dir (str): directory to write image folder
+            post_list (pd.DataFrame): position list
+            scanQueueFlag (bool): flag to add scan to the common scan queue
         
         Returns:
             None

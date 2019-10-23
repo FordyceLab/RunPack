@@ -27,7 +27,7 @@
                 "5cy5"
             ],
             "filterblock_name": "TiFilterBlock",
-            "core_timeout": 10000,
+            "core_timeout": 15000,
             "config_loc": "C:\\Program Files\\Micro-Manager-2.0beta\\Fordyce_MASTER_March2018_2.cfg",
             "version": "C:\\Program Files\\Micro-Manager-2.0beta",
             "defaults":

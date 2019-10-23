@@ -437,7 +437,7 @@ class HardwareInterface:
         HardwareInterface.mm_version = mm['version']
         HardwareInterface.mmcfg = mm['config_loc']
         HardwareInterface.setup = str(hc['setup_id'])
-        HardwareInterface.coreTimeout
+        HardwareInterface.coreTimeout = int(mm['core_timeout'])
         HardwareInterface.valvemapPath = str(wago['valvemap_path'])
         HardwareInterface.manifoldAddress = wago['address']
         HardwareInterface.manifoldOffset = wago['offset']

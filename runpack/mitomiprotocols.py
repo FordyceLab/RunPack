@@ -3,7 +3,7 @@
 # authors           : Daniel Mokhtari
 # credits           : Craig Markin
 # date              : 20180520
-# version update    : 20190605
+# version update    : 20191219
 # version           : 0.1.1
 # usage             : With permission from DM
 # python_version    : 2.7
@@ -34,7 +34,7 @@ def patternDevices(devices, inletNames = None, blocknames = None):
     all lines to pressure before executing.
 
     Custom inlet names should be of the form {'na': [na_renamed], 'ph': 
-    [ph_renamed], 'bb': [bb_renamed], 'hep': [bb_renamed]}
+    [ph_renamed], 'bb': [bb_renamed], 'hep': [bb_renamed], 'w': [w_renamed]}
     
     Custom blocknames should be of the form ['bn1', 'bn2', 'bn3',..., 'bnn']
     Blocks opening/closing will occur with inlet opening/closing
@@ -74,14 +74,16 @@ def patternDevices(devices, inletNames = None, blocknames = None):
 
     vc.returnToSafeState(devices) # Closing all valves
 
-    eh.scriptlogger.info('>> 1/18. Starting Device Patterning for devices {}. Starting with all valves closed. \
-        NOTE: flow of non-biotinylated BSA should have already been done'.format(devices))
+    eh.scriptlogger.info('>> 1/18. Starting Device Patterning for devices {}. \
+        Starting with all valves closed. NOTE: flow of non-biotinylated BSA \
+        should have already been done'.format(devices))
     eh.scriptlogger.info('2/18. Opening sandwiches, outlet, bBSA inlet, and waste. \
         Flushing bBSA through inlet tree to waste for 30s')
     vc.openValves(devices, sandwichValves + outlet + bbsaValve + wasteValve)
     time.sleep(30)
 
-    eh.scriptlogger.info('3/18. Done Flushing bBSA to waste. Flushing bBSA through devices with buttons closed for 5min')
+    eh.scriptlogger.info('3/18. Done Flushing bBSA to waste. Flushing bBSA through \
+        devices with buttons closed for 5min')
     vc.closeValves(devices, wasteValve)
     vc.openValves(devices, inletValve)
     time.sleep(300)
@@ -96,7 +98,8 @@ def patternDevices(devices, inletNames = None, blocknames = None):
     vc.openValves(devices, bufferValve + wasteValve)
     time.sleep(30)
 
-    eh.scriptlogger.info('6/18. Done flowing PBS to waste. Flushing PBS through device with  buttons open for 10min')
+    eh.scriptlogger.info('6/18. Done flowing PBS to waste. Flushing PBS through device \
+        with  buttons open for 10min')
     vc.closeValves(devices,  wasteValve)
     vc.openValves(devices, inletValve)
     time.sleep(600)
@@ -137,12 +140,14 @@ def patternDevices(devices, inletNames = None, blocknames = None):
     vc.openValves(devices, antibodyValve + wasteValve)
     time.sleep(30)
             
-    eh.scriptlogger.info('13/18. Done flowing Antibody through inlet tree. Flowing Antibody through device for 2min')
+    eh.scriptlogger.info('13/18. Done flowing Antibody through inlet tree. Flowing \
+        Antibody through device for 2min')
     vc.closeValves(devices, wasteValve)
     vc.openValves(devices, inletValve)
     time.sleep(120)
 
-    eh.scriptlogger.info('14/18. While flowing Antibody through devices, opened buttons. Flowing for 13.3min')
+    eh.scriptlogger.info('14/18. While flowing Antibody through devices, opened buttons. \
+        Flowing for 13.3min')
     vc.openValves(devices, buttonValves)
     time.sleep(800)
 
@@ -150,7 +155,8 @@ def patternDevices(devices, inletNames = None, blocknames = None):
     vc.closeValves(devices, buttonValves)
     time.sleep(30)
 
-    eh.scriptlogger.info('16/18. Done flowing Antibody through device. Flowing PBS through inlet tree to waste for 30s')
+    eh.scriptlogger.info('16/18. Done flowing Antibody through device. Flowing PBS through \
+        inlet tree to waste for 30s')
     vc.closeValves(devices, antibodyValve + inletValve)
     vc.openValves(devices, bufferValve + wasteValve)
     time.sleep(30)      
@@ -176,8 +182,10 @@ def performSDSWash(deviceNames, channelsExposures, sdsInputLines, bufferInputLin
     
     
     Args:
-        deviceNames (list): list of devices for which to perform SDS washes (e.g., ['d1', 'd2', 'd3'])
-        channelsExposures (dict): Dictionary of channels mapped to exposures (e.g., {'2bf':[50, 500], '1pbp':[100, 200]})
+        deviceNames (list): list of devices for which to perform SDS washes 
+            (e.g., ['d1', 'd2', 'd3'])
+        channelsExposures (dict): Dictionary of channels mapped to exposures 
+            (e.g., {'2bf':[50, 500], '1pbp':[100, 200]})
         sdsInputLines (list): names of SDS input ports (without trailing device number)
         bufferInputLines (list): names of buffer input ports (without trailing device number)
 
@@ -235,8 +243,9 @@ def performSDSWash(deviceNames, channelsExposures, sdsInputLines, bufferInputLin
     vc.returnToSafeState(deviceNames)
 
 
-def flowSubstrateStartAssay(deviceName, substrateInput, KineticAcquisition, equilibrationTime = 600, treeFlushTime = 20, 
-    postEquilibrationImaging = False, performImaging = True, postEquilibImageChanExp = {'4egfp':[500]}, scanQueueFlag = False):
+def flowSubstrateStartAssay(deviceName, substrateInput, KineticAcquisition, 
+    equilibrationTime = 600, treeFlushTime = 20, postEquilibrationImaging = False, 
+    performImaging = True, postEquilibImageChanExp = {'4egfp':[500]}, scanQueueFlag = False):
     """Performs a standard enzyme turnover assay. 
 
     Flows substrate, exposes buttons and closes sandwiches, 
@@ -255,7 +264,8 @@ def flowSubstrateStartAssay(deviceName, substrateInput, KineticAcquisition, equi
     sendToQueue = scanQueueFlag  
     inputValve =  substrateInput[:-1]
 
-    eh.scriptlogger.info('>> Flowing substrate, starting assay ' + 'for device ' + deviceName + ' in lines ' + str(substrateInput))
+    eh.scriptlogger.info('>> Flowing substrate, starting assay for \
+        device {} in lines {}'.format(deviceName, str(substrateInput)))
     deviceNumber = str(deviceName[-1])
     
     #Flush the inlet tree
@@ -278,11 +288,20 @@ def flowSubstrateStartAssay(deviceName, substrateInput, KineticAcquisition, equi
 
     if postEquilibrationImaging:
         if sendToQueue == True:
-            args = [eh.rootPath, postEquilibImageChanExp, deviceName, KineticAcquisition.note.replace(" ", "_")+'_PreAssay_ButtonQuant', eh.posLists[deviceName]]
+            args = [eh.rootPath, 
+                    postEquilibImageChanExp, 
+                    deviceName, 
+                    KineticAcquisition.note.replace(" ", "_")+'_PreAssay_ButtonQuant', 
+                    eh.posLists[deviceName]]
             kwargs = {wrappingFolder: True}
             ic.hardwareQueue.put((args, kwargs))
         else:
-            ic.scan(eh.rootPath, postEquilibImageChanExp, deviceName, KineticAcquisition.note.replace(" ", "_")+'_PreAssay_ButtonQuant', eh.posLists[deviceName], wrappingFolder = True)
+            ic.scan(eh.rootPath, 
+                postEquilibImageChanExp, 
+                deviceName, 
+                KineticAcquisition.note.replace(" ", "_")+'_PreAssay_ButtonQuant', 
+                eh.posLists[deviceName], 
+                wrappingFolder = True)
 
     #Close things to prep for assay, and open buttons
     vc.closeValves([deviceName], [substrateInput[:-1], 'in', 'out', 's1', 's2'])
@@ -291,26 +310,35 @@ def flowSubstrateStartAssay(deviceName, substrateInput, KineticAcquisition, equi
   
     #Start the assay
     if performImaging: 
-        KineticAcquisition.startAssay(eh.rootPath, eh.posLists[deviceName], scanQueueFlag = sendToQueue)
+        KineticAcquisition.startAssay(eh.rootPath, 
+                                        eh.posLists[deviceName], 
+                                        scanQueueFlag = sendToQueue)
 
 
-def measureStandardCurve(devices, devicesInputs, concentrations, channelsExposures, standardType, treeFlushTime = 15, equilibrationTime = 480):
+def measureStandardCurve(devices, devicesInputs, concentrations, channelsExposures, 
+    standardType, treeFlushTime = 15, equilibrationTime = 480):
     """Sequentially flows fluorogenic product and images with "buttons up"
 
     Leaving group (product lines) lines pre-attached to devices
     
     Args:
         devices (list): devices to be imaged
-        concentrations (list): concentrations (with units) to be flowed and quantified (i.e., [c1(uM), c2(uM),..., cn(uM)])
-        devicesInputs (dict): {d1: {concentration1: input1, concentration2: input2}, d2: {concentration1: input1, concentration2: input2}}
-        channelsExposures (dict): Dictionary of channels mapped to exposures (e.g., {'2bf':[50, 500], '1pbp':[100, 200]})
+        concentrations (list): concentrations (with units) to be flowed and 
+            quantified (i.e., [c1(uM), c2(uM),..., cn(uM)])
+        devicesInputs (dict): {d1: {concentration1: input1, concentration2: input2}, 
+            d2: {concentration1: input1, concentration2: input2}}
+        channelsExposures (dict): Dictionary of channels mapped to exposures 
+            (e.g., {'2bf':[50, 500], '1pbp':[100, 200]})
         standardType (str): keyword descriptor for standard (e.g., cMU, FL, or PBP)
         
     Returns: 
         None
     """
 
-    eh.scriptlogger.info('Measuring Standard Curves for ' + str(devices) + 'with ' + str(channelsExposures))
+    eh.scriptlogger.info('Measuring Standard Curves for ' 
+                            + str(devices) 
+                            + 'with ' 
+                            + str(channelsExposures))
     timeSpacings = []
     s = BackgroundScheduler()
     s.start()
@@ -318,7 +346,10 @@ def measureStandardCurve(devices, devicesInputs, concentrations, channelsExposur
         concentrationScans = []
         for device in devicesInputs.keys():
             inputLine = devicesInputs[device][concentration]
-            description = '{}_{}_{}_{}'.format(str(device), str(concentration), str(standardType), str(inputLine))
+            description = '{}_{}_{}_{}'.format(str(device), 
+                                                str(concentration), 
+                                                str(standardType), 
+                                                str(inputLine))
             k = ic.KineticAcquisition(device, channelsExposures, timeSpacings, description)
             concentrationScans.append(k)
             
@@ -348,7 +379,8 @@ def flowSubstratesStartConcurrentAssays(deviceNames, substrateInputs, KineticAcq
             TRAILING DEVICE NUMBER) containing substrates to assay, in 
             numerical device order (e.g., [prot, ext1])
         KineticAcquisitions (list): list of KineticAcquisition objects 
-            containing acquisition parameters. Note that 'd1' KineticAcquisition timings will be used to drive both devices
+            containing acquisition parameters. Note that 'd1' KineticAcquisition 
+            timings will be used to drive both devices
         data_dir (str): path of root data directory
         pos_lists (list): list of device-specific position lists, in 
             numerical device order (e.g., [posLists['d1'], posLists['d2']])
@@ -361,7 +393,8 @@ def flowSubstratesStartConcurrentAssays(deviceNames, substrateInputs, KineticAcq
         None
     """
 
-    eh.scriptlogger.info('**Flowing substrate, starting concurrent for devices {} in lines {}' + str(deviceNames) + ' in lines ' + str(substrateInputs))
+    eh.scriptlogger.info('**Flowing substrate, starting concurrent for devices \
+        {} in lines {}'.format(str(deviceNames), str(substrateInputs)))
 
     # Flush the inlet trees
     eh.scriptlogger.info('The inlet tree wash started for substrates in ' + str(substrateInputs))
@@ -396,14 +429,21 @@ def flowSubstratesStartConcurrentAssays(deviceNames, substrateInputs, KineticAcq
     # Name the kinetic acquisitions and directories
     d1Kinetics = KineticAcquisitions[0]
     d2Kinetics = KineticAcquisitions[1]
-    d1KineticSubfolder = '{}_{}_{}'.format('d1', time.strftime("%Y%m%d_%H%M%S", time.localtime()), d1Kinetics.note.replace(" ", "_"))
-    d2KineticSubfolder = '{}_{}_{}'.format('d2', time.strftime("%Y%m%d_%H%M%S", time.localtime()), d2Kinetics.note.replace(" ", "_"))
+    d1KineticSubfolder = '{}_{}_{}'.format('d1', 
+                                            time.strftime("%Y%m%d_%H%M%S", time.localtime()), 
+                                            d1Kinetics.note.replace(" ", "_"))
+    d2KineticSubfolder = '{}_{}_{}'.format('d2', 
+                                            time.strftime("%Y%m%d_%H%M%S", time.localtime()), 
+                                            d2Kinetics.note.replace(" ", "_"))
     d1kineticDirectory = os.path.join(data_dir, d1KineticSubfolder)
     d2kineticDirectory = os.path.join(data_dir, d2KineticSubfolder)
     os.makedirs(d1kineticDirectory)
     os.makedirs(d2kineticDirectory)
 
-    eh.scriptlogger.info('Concurrent Kinetic Acquisitions Started: ' + str(d1Kinetics.note.replace(" ", "_")) + ' & ' + str(d2Kinetics.note.replace(" ", "_")))
+    eh.scriptlogger.info('Concurrent Kinetic Acquisitions Started: ' 
+        + str(d1Kinetics.note.replace(" ", "_")) 
+        + ' & ' 
+        + str(d2Kinetics.note.replace(" ", "_")))
 
     #Open d1 buttons only
     vc.openValves([deviceNames[0]], ['b1', 'b2'])
@@ -420,10 +460,16 @@ def flowSubstratesStartConcurrentAssays(deviceNames, substrateInputs, KineticAcq
         deltaTime = (nextScanDelay + lastScanTime) - time.time()
         # If too much elapsed time on previous scans, scan right away
         if deltaTime <= 0:
-            # For the first scan, scan d1, then change d2 valve states to start the reaction on d2, then scan d2 immediately
+            # For the first scan, scan d1, then change d2 valve states to start the 
+            # reaction on d2, then scan d2 immediately
             if scanIndex == 0:
                 lastScanTime = time.time()
-                ic.scan(d1kineticDirectory, d1Kinetics.channelsExposures, d1Kinetics.device, d1Kinetics.note.replace(" ", "_"), pos_lists[0], wrappingFolder = True)
+                ic.scan(d1kineticDirectory, 
+                    d1Kinetics.channelsExposures, 
+                    d1Kinetics.device, 
+                    d1Kinetics.note.replace(" ", "_"), p
+                    os_lists[0], 
+                    wrappingFolder = True)
                 
                 vc.close('chip', substrateInputs[1])
                 vc.closeValves([deviceNames[1]], ['in'])
@@ -431,18 +477,38 @@ def flowSubstratesStartConcurrentAssays(deviceNames, substrateInputs, KineticAcq
                 vc.closeValves([deviceNames[1]], ['s1', 's2'])
                 vc.openValves([deviceNames[1]], ['b1', 'b2'])
 
-                ic.scan(d2kineticDirectory, d2Kinetics.channelsExposures, d2Kinetics.device, d2Kinetics.note.replace(" ", "_"), pos_lists[1], wrappingFolder = True)
-                scanIndex+=1
+                ic.scan(d2kineticDirectory, 
+                    d2Kinetics.channelsExposures, 
+                    d2Kinetics.device, 
+                    d2Kinetics.note.replace(" ", "_"), 
+                    pos_lists[1], 
+                    wrappingFolder = True)
+                    scanIndex+=1
             else:
                 lastScanTime = time.time()
-                ic.scan(d1kineticDirectory, d1Kinetics.channelsExposures, d1Kinetics.device, d1Kinetics.note.replace(" ", "_"), pos_lists[0], wrappingFolder = True)
-                ic.scan(d2kineticDirectory, d2Kinetics.channelsExposures, d2Kinetics.device, d2Kinetics.note.replace(" ", "_"), pos_lists[1], wrappingFolder = True)
+                ic.scan(d1kineticDirectory, 
+                    d1Kinetics.channelsExposures, 
+                    d1Kinetics.device, 
+                    d1Kinetics.note.replace(" ", "_"), 
+                    pos_lists[0], 
+                    wrappingFolder = True)
+                ic.scan(d2kineticDirectory, 
+                    d2Kinetics.channelsExposures, 
+                    d2Kinetics.device, 
+                    d2Kinetics.note.replace(" ", "_"), 
+                    pos_lists[1], 
+                    wrappingFolder = True)
         # If you have time to spare, wait, then proceed
         else:
             time.sleep(deltaTime)
             if scanIndex == 0:
                 lastScanTime = time.time()
-                ic.scan(d1kineticDirectory, d1Kinetics.channelsExposures, d1Kinetics.device, d1Kinetics.note.replace(" ", "_"), pos_lists[0], wrappingFolder = True)
+                ic.scan(d1kineticDirectory, 
+                        d1Kinetics.channelsExposures, 
+                        d1Kinetics.device, 
+                        d1Kinetics.note.replace(" ", "_"), 
+                        pos_lists[0], 
+                        wrappingFolder = True)
                 
                 vc.close('chip', substrateInputs[1])
                 vc.closeValves([deviceNames[1]], ['in'])
@@ -450,12 +516,27 @@ def flowSubstratesStartConcurrentAssays(deviceNames, substrateInputs, KineticAcq
                 vc.closeValves([deviceNames[1]], ['s1', 's2'])
                 vc.openValves([deviceNames[1]], ['b1', 'b2'])
 
-                ic.scan(d2kineticDirectory, d2Kinetics.channelsExposures, d2Kinetics.device, d2Kinetics.note.replace(" ", "_"), pos_lists[1], wrappingFolder = True)
+                ic.scan(d2kineticDirectory, 
+                        d2Kinetics.channelsExposures, 
+                        d2Kinetics.device, 
+                        d2Kinetics.note.replace(" ", "_"), 
+                        pos_lists[1], 
+                        wrappingFolder = True)
                 scanIndex+=1
             else:
                 lastScanTime = time.time()
-                ic.scan(d1kineticDirectory, d1Kinetics.channelsExposures, d1Kinetics.device, d1Kinetics.note.replace(" ", "_"), pos_lists[0], wrappingFolder = True)
-                ic.scan(d2kineticDirectory, d2Kinetics.channelsExposures, d2Kinetics.device, d2Kinetics.note.replace(" ", "_"), pos_lists[1], wrappingFolder = True)
+                ic.scan(d1kineticDirectory, 
+                        d1Kinetics.channelsExposures, 
+                        d1Kinetics.device, 
+                        d1Kinetics.note.replace(" ", "_"), 
+                        pos_lists[0], 
+                        wrappingFolder = True)
+                ic.scan(d2kineticDirectory, 
+                        d2Kinetics.channelsExposures, 
+                        d2Kinetics.device, 
+                        d2Kinetics.note.replace(" ", "_"), 
+                        pos_lists[1], 
+                        wrappingFolder = True)
     
     eh.scriptlogger.info('Concurrent Kinetic Read Complete')
     
@@ -466,8 +547,9 @@ def startConcurrentImaging(deviceNames, KineticAcquisitions, data_dir, pos_lists
     Args:
         deviceNames (list): names of devices for which to run assays, in 
             numerical device order (e.g., ['d1', 'd2'])
-        KineticAcquisitions (list): list of KineticAcquisition objects 
-            containing acquisition parameters. Note that 'd1' KineticAcquisition timings will be used to drive both devices
+        KineticAcquisitions (list): list of KineticAcquisition objects containing acquisition 
+            parameters. Note that 'd1' KineticAcquisition timings will be 
+            used to drive both devices
         data_dir (str): path of root data directory
         pos_lists (list): list of device-specific position lists, in numerical 
             device order (e.g., [posLists['d1'], posLists['d2']])
@@ -479,15 +561,21 @@ def startConcurrentImaging(deviceNames, KineticAcquisitions, data_dir, pos_lists
     # Name the kinetic acquisitions and directories
     d1Kinetics = KineticAcquisitions[0]
     d2Kinetics = KineticAcquisitions[1]
-    d1KineticSubfolder = '{}_{}_{}'.format(deviceNames[0], time.strftime("%Y%m%d_%H%M%S", time.localtime()), d1Kinetics.note.replace(" ", "_"))
-    d2KineticSubfolder = '{}_{}_{}'.format(deviceNames[1], time.strftime("%Y%m%d_%H%M%S", time.localtime()), d2Kinetics.note.replace(" ", "_"))
+    d1KineticSubfolder = '{}_{}_{}'.format(deviceNames[0], 
+                                            time.strftime("%Y%m%d_%H%M%S", time.localtime()), 
+                                            d1Kinetics.note.replace(" ", "_"))
+    d2KineticSubfolder = '{}_{}_{}'.format(deviceNames[1], 
+                                            time.strftime("%Y%m%d_%H%M%S", time.localtime()), 
+                                            d2Kinetics.note.replace(" ", "_"))
     d1kineticDirectory = os.path.join(data_dir, d1KineticSubfolder)
     d2kineticDirectory = os.path.join(data_dir, d2KineticSubfolder)
     os.makedirs(d1kineticDirectory)
     os.makedirs(d2kineticDirectory)
 
-    eh.scriptlogger.info('Concurrent Imaging Started for {}, {} & {}'.format(str(deviceNames), str(d1Kinetics.note.replace(" ", "_")), str(d2Kinetics.note.replace(" ", "_"))))
-
+    eh.scriptlogger.info('Concurrent Imaging Started for \
+        {}, {} & {}'.format(str(deviceNames), 
+                            str(d1Kinetics.note.replace(" ", "_")), 
+                            str(d2Kinetics.note.replace(" ", "_"))))
     scanIndex = 0
     d1ScanQueue = Queue()
     d2ScanQueue = Queue()
@@ -500,28 +588,69 @@ def startConcurrentImaging(deviceNames, KineticAcquisitions, data_dir, pos_lists
         deltaTime = (nextScanDelay + lastScanTime) - time.time()
         # If you've gobbled up too much time on previous scans, scan right away
         if deltaTime <= 0:
-            # For the first scan, scan d1, then change d2 valve states to start the reaction on d2, then scan d2 immediately
+            # For the first scan, scan d1, then change d2 valve states to start the reaction on d2, 
+            # then scan d2 immediately
             if scanIndex == 0:
                 lastScanTime = time.time()
-                ic.scan(d1kineticDirectory, d1Kinetics.channelsExposures, d1Kinetics.device, d1Kinetics.note.replace(" ", "_"), pos_lists[0], wrappingFolder = True)
-                ic.scan(d2kineticDirectory, d2Kinetics.channelsExposures, d2Kinetics.device, d2Kinetics.note.replace(" ", "_"), pos_lists[1], wrappingFolder = True)
+                ic.scan(d1kineticDirectory, 
+                        d1Kinetics.channelsExposures, 
+                        d1Kinetics.device, 
+                        d1Kinetics.note.replace(" ", "_"), 
+                        pos_lists[0], 
+                        wrappingFolder = True)
+                ic.scan(d2kineticDirectory, 
+                        d2Kinetics.channelsExposures, 
+                        d2Kinetics.device, 
+                        d2Kinetics.note.replace(" ", "_"), 
+                        pos_lists[1], 
+                        wrappingFolder = True)
                 scanIndex+=1
             else:
                 lastScanTime = time.time()
-                ic.scan(d1kineticDirectory, d1Kinetics.channelsExposures, d1Kinetics.device, d1Kinetics.note.replace(" ", "_"), pos_lists[0], wrappingFolder = True)
-                ic.scan(d2kineticDirectory, d2Kinetics.channelsExposures, d2Kinetics.device, d2Kinetics.note.replace(" ", "_"), pos_lists[1], wrappingFolder = True)
+                ic.scan(d1kineticDirectory, 
+                        d1Kinetics.channelsExposures, 
+                        d1Kinetics.device, 
+                        d1Kinetics.note.replace(" ", "_"), 
+                        pos_lists[0], 
+                        wrappingFolder = True)
+                ic.scan(d2kineticDirectory, 
+                        d2Kinetics.channelsExposures, 
+                        d2Kinetics.device, 
+                        d2Kinetics.note.replace(" ", "_"), 
+                        pos_lists[1], 
+                        wrappingFolder = True)
         # If you have time to spare, wait, then proceed:
         else:
             time.sleep(deltaTime)
             if scanIndex == 0:
                 lastScanTime = time.time()
-                ic.scan(d1kineticDirectory, d1Kinetics.channelsExposures, d1Kinetics.device, d1Kinetics.note.replace(" ", "_"), pos_lists[0], wrappingFolder = True)
-                ic.scan(d2kineticDirectory, d2Kinetics.channelsExposures, d2Kinetics.device, d2Kinetics.note.replace(" ", "_"), pos_lists[1], wrappingFolder = True)
+                ic.scan(d1kineticDirectory, 
+                        d1Kinetics.channelsExposures, 
+                        d1Kinetics.device, 
+                        d1Kinetics.note.replace(" ", "_"), 
+                        pos_lists[0], 
+                        wrappingFolder = True)
+                ic.scan(d2kineticDirectory, 
+                        d2Kinetics.channelsExposures, 
+                        d2Kinetics.device, 
+                        d2Kinetics.note.replace(" ", "_"), 
+                        pos_lists[1], 
+                        wrappingFolder = True)
                 scanIndex+=1
             else:
                 lastScanTime = time.time()
-                ic.scan(d1kineticDirectory, d1Kinetics.channelsExposures, d1Kinetics.device, d1Kinetics.note.replace(" ", "_"), pos_lists[0], wrappingFolder = True)
-                ic.scan(d2kineticDirectory, d2Kinetics.channelsExposures, d2Kinetics.device, d2Kinetics.note.replace(" ", "_"), pos_lists[1], wrappingFolder = True)
+                ic.scan(d1kineticDirectory, 
+                        d1Kinetics.channelsExposures, 
+                        d1Kinetics.device, 
+                        d1Kinetics.note.replace(" ", "_"), 
+                        pos_lists[0], 
+                        wrappingFolder = True)
+                ic.scan(d2kineticDirectory, 
+                        d2Kinetics.channelsExposures, 
+                        d2Kinetics.device, 
+                        d2Kinetics.note.replace(" ", "_"), 
+                        pos_lists[1], 
+                        wrappingFolder = True)
     eh.scriptlogger.info('Concurrent Imaging Complete for {}'.format(str(deviceNames)))
 
 
@@ -539,11 +668,17 @@ def makeAssayTimings(numLinearPoints = 5, totalPoints = 15, scanTime = 90, total
     while sum(baseTimes) < totalTime:
         pointDensity += pointDenistyIncremener
         baseTimes = [scanTime] * numLinearPoints
-        logTimings = list(np.logspace(np.log10(scanTime), np.log10(float(scanTime)**pointDensity), num=logPoints, dtype=int))
+        logTimings = list(np.logspace(np.log10(scanTime), 
+                                        np.log10(float(scanTime)**pointDensity), 
+                                        num=logPoints, 
+                                        dtype=int))
         baseTimes.extend(logTimings)
     
     baseTimes = [scanTime] * numLinearPoints
-    logTimings = list(np.logspace(np.log10(scanTime), np.log10(float(scanTime)**(pointDensity-pointDenistyIncremener)), num=logPoints, dtype=int))
+    logTimings = list(np.logspace(np.log10(scanTime), 
+                                    np.log10(float(scanTime)**(pointDensity-pointDenistyIncremener)), 
+                                    num=logPoints, 
+                                    dtype=int))
     baseTimes.extend(logTimings)
     return baseTimes
 
@@ -566,7 +701,7 @@ def flushInletTree(deviceNames, inputInlet, vacantInlets, flushTime):
     # Get the distance from the inputInlet to the vacantInlet mapped to the vacantInlet ID
     vacantInletsOrganized = {}
     for inlet in vacantInlets:
-        vacantInletsOrganized[abs(indexesInputs[inlet] - inputIndex)] = [inlet] # distance-->port
+        vacantInletsOrganized[abs(indexesInputs[inlet] - inputIndex)] = [inlet] # distance->port
 
     vc.openValves(deviceNames, [inputInlet])
     # Now from close to far, open the valve and wash for the flushTime
@@ -580,8 +715,10 @@ def flushInletTree(deviceNames, inputInlet, vacantInlets, flushTime):
 
 
 
-def performGFPTitration(expObject, deviceName, channelsExposures, channelsExposuresTimecourse, eGFPInput, bufferInput, numPreEquilibriumSteps = 4, 
-    inletTreeFlushTime = 30, preEquilibrationFlushTime = 600, stepUpEquilibrationTime = 360, eGFPTitrationBindingTimes = [], scanTime = 90, numTitrationTimepoints = 10):
+def performGFPTitration(expObject, deviceName, channelsExposures, channelsExposuresTimecourse, 
+    eGFPInput, bufferInput, numPreEquilibriumSteps = 4, inletTreeFlushTime = 30, 
+    preEquilibrationFlushTime = 600, stepUpEquilibrationTime = 360, eGFPTitrationBindingTimes = [], 
+    scanTime = 90, numTitrationTimepoints = 10):
     """Performs a GFP titration experiment.
     Starting State: Chip Patterned, Buttons Down (protected)
     Reagent Lines: 1x MOPS reaction buffer (with Zn2+), 3nM or 5nM eGFP+2% BSA 
@@ -644,31 +781,47 @@ def performGFPTitration(expObject, deviceName, channelsExposures, channelsExposu
 
     if eGFPInput not in inputs or bufferInput not in inputs:
         raise ValueError('Port name(s) incorrectly specified. \
-                            The eGFP and Buffer Input Ports must be specified without a trailing device number')
+                            The eGFP and Buffer Input Ports must be specified without a \
+                            trailing device number')
 
     eh.scriptlogger.critical('Starting eGFP Titration in 10s')
     time.sleep(10) # A safety in case you notice something wrong
    
     # 1. Close valving, scan GFP
     eh.scriptlogger.info('1/6. Started Assay. Preparing Valve States and Background Imaging')
-    eh.scriptlogger.info('GFP Input: {}, Buffer Input: {}, Channels & Exposures: {}, Pre-Equilibration Steps: {}, \
-        Titration Steps: {}'.format(eGFPInput, bufferInput, channelsExposures, numPreEquilibriumSteps, len(eGFPTitrationBindingTimes)))
+    eh.scriptlogger.info(
+        'GFP Input: {}, Buffer Input: {}, Channels & Exposures: {}, \
+        Pre-Equilibration Steps: {}, Titration Steps: {}\
+        '.format(
+            eGFPInput, 
+            bufferInput, 
+            channelsExposures, 
+            numPreEquilibriumSteps, 
+            len(eGFPTitrationBindingTimes))
+            )
+
     vc.returnToSafeState([deviceName])
-    ic.scan(expObject.rootPath, channelsExposures, deviceName, 'PreAssay ButtonQuant', eh.posLists[deviceName], wrappingFolder = True)
+    ic.scan(expObject.rootPath, 
+            channelsExposures, 
+            deviceName, 
+            'PreAssay ButtonQuant', 
+            eh.posLists[deviceName], 
+            wrappingFolder = True)
     eh.scriptlogger.info('Completed Pre-Imaging')
    
     # 2. Pre-equilibration of chamber walls
     eh.scriptlogger.info('2/6. Started Wall Pre-Equilibration')
     vc.openValves([deviceName], ['s1', 's2', 'out'])
     for step in range(numPreEquilibriumSteps):
-        eh.scriptlogger.warning('Started eGFP/Buffer Pre-Equilibration Cycle {} of {}, {}s Cycle Time'.format(step+1, 
-                                    numPreEquilibriumSteps, preEquilibrationFlushTime*2))
+        eh.scriptlogger.warning('Started eGFP/Buffer Pre-Equilibration Cycle {} of {}, {}s \
+            Cycle Time'.format(step+1, numPreEquilibriumSteps, preEquilibrationFlushTime*2))
         vc.openValves([deviceName], [eGFPInput, 'in'])
         time.sleep(preEquilibrationFlushTime)
         vc.closeValves([deviceName], [eGFPInput])
         vc.openValves([deviceName], [bufferInput])
         time.sleep(preEquilibrationFlushTime)
-        ic.scan(expObject.rootPath, channelsExposures, deviceName, 'PostPreEquilibrationBinding Step {}'.format(step+1), eh.posLists[deviceName], wrappingFolder = True)
+        ic.scan(expObject.rootPath, channelsExposures, deviceName, 'PostPreEquilibrationBinding \
+            Step {}'.format(step+1), eh.posLists[deviceName], wrappingFolder = True)
         vc.closeValves([deviceName], [bufferInput])
         eh.scriptlogger.warning('Completed Pre-Equilibration Cycle {} of {}'.format(step+1, numPreEquilibriumSteps))
     eh.scriptlogger.info('Completed Wall Pre-Equilibration')
@@ -677,9 +830,15 @@ def performGFPTitration(expObject, deviceName, channelsExposures, channelsExposu
     eh.scriptlogger.info('3/6. Started Wall to Button Control')
     vc.returnToSafeState([deviceName])
     wallToButtonTimings = {}
-    wallToButtonTimings['fromWallsControl'] = makeAssayTimings(numLinearPoints = 5, totalPoints = 8, scanTime = scanTime, totalTime = 1200)
+    wallToButtonTimings['fromWallsControl'] = makeAssayTimings(numLinearPoints = 5, 
+                                                                totalPoints = 8, 
+                                                                scanTime = scanTime, 
+                                                                totalTime = 1200)
     expObject.addAssayTimings(wallToButtonTimings)
-    fromButtonsToWalls = ic.KineticAcquisition(deviceName, channelsExposuresTimecourse, expObject.assayTimes['fromWallsControl'], 'Kinetics ButtonstoWallsControl ButtonsUp')
+    fromButtonsToWalls = ic.KineticAcquisition(deviceName, 
+                                                channelsExposuresTimecourse, 
+                                                expObject.assayTimes['fromWallsControl'], 
+                                                'Kinetics ButtonstoWallsControl ButtonsUp')
     vc.openValves([deviceName], ['b1', 'b2'])
     fromButtonsToWalls.startAssay(expObject.rootPath, eh.posLists[deviceName])
     vc.closeValves([deviceName], ['b1', 'b2'])
@@ -687,7 +846,8 @@ def performGFPTitration(expObject, deviceName, channelsExposures, channelsExposu
 
     # 4. Pre-Step-Up Imaging (Buttons Down)
     eh.scriptlogger.info('4/6. Started Pre-Step-Up Quantifications')
-    ic.scan(expObject.rootPath, channelsExposures, deviceName, 'PreStepUp ButtonQuant ButtonsDown', eh.posLists[deviceName], wrappingFolder = True)
+    ic.scan(expObject.rootPath, channelsExposures, deviceName, 'PreStepUp ButtonQuant ButtonsDown', 
+            eh.posLists[deviceName], wrappingFolder = True)
     eh.scriptlogger.info('Completed Pre-Step-Up Quantifications')
 
     # 5. eGFP Titration Steps
@@ -696,20 +856,40 @@ def performGFPTitration(expObject, deviceName, channelsExposures, channelsExposu
     for step, bindingTime in enumerate(eGFPTitrationBindingTimes):
         timingsName = 'eGFPBindingStep{}Times'.format(step)
         eGFPTitrationTimingsKeys.append(timingsName)
-        eGFPTitrationTimings[timingsName] = makeAssayTimings(numLinearPoints = 0, totalPoints = numTitrationTimepoints, scanTime = scanTime, totalTime = bindingTime)
+        eGFPTitrationTimings[timingsName] = makeAssayTimings(numLinearPoints = 0, 
+                                                            totalPoints = numTitrationTimepoints, 
+                                                            scanTime = scanTime, 
+                                                            totalTime = bindingTime)
     expObject.addAssayTimings(eGFPTitrationTimings)
 
     eh.scriptlogger.info('5/6. Started eGFP Titration Step-Up')
     for step, stepTimingsName in enumerate(eGFPTitrationTimingsKeys):
-        eh.scriptlogger.warning('Started GFP Binding Step {} of {}'.format(step+1, len(eGFPTitrationTimingsKeys)))
-        eh.scriptlogger.info('Titration Step {}, Timings: {}'.format(stepTimingsName, expObject.assayTimes[stepTimingsName]))
+        w = 'Started GFP Binding Step {} of {}'.format(step+1, len(eGFPTitrationTimingsKeys))
+        i = 'Titration Step {}, Timings: {}'.format(stepTimingsName, expObject.assayTimes[stepTimingsName])
+        eh.scriptlogger.warning(w)
+        eh.scriptlogger.info(i)
         description = 'Kinetics eGFPTitrationBindingStep {}'.format(step+1)
-        ka = ic.KineticAcquisition(deviceName, channelsExposuresTimecourse, expObject.assayTimes[stepTimingsName], description)
-        flowSubstrateStartAssay(deviceName,  eGFPInput+deviceName[-1], ka, equilibrationTime = stepUpEquilibrationTime, 
-            treeFlushTime = 10, postEquilibrationImaging = True, performImaging = True, postEquilibImageChanExp = channelsExposures)
+        ka = ic.KineticAcquisition(deviceName, 
+                                    channelsExposuresTimecourse, 
+                                    expObject.assayTimes[stepTimingsName], 
+                                    description)
+        flowSubstrateStartAssay(deviceName,  
+            eGFPInput+deviceName[-1], 
+            ka, 
+            equilibrationTime = stepUpEquilibrationTime, 
+            treeFlushTime = 10, 
+            postEquilibrationImaging = True, 
+            performImaging = True, 
+            postEquilibImageChanExp = channelsExposures)
         vc.closeValves([deviceName], ['b1', 'b2'])
-        ic.scan(expObject.rootPath, channelsExposures, deviceName, 'PosteGFPTitrationBindingStep {} ButtonsDown'.format(step+1), eh.posLists[deviceName], wrappingFolder = True)
-        eh.scriptlogger.warning('Completed GFP Binding Step {} of {}'.format(step+1, len(eGFPTitrationTimingsKeys)))
+        ic.scan(expObject.rootPath, 
+            channelsExposures, 
+            deviceName, 
+            'PosteGFPTitrationBindingStep {} ButtonsDown'.format(step+1), 
+            eh.posLists[deviceName], 
+            wrappingFolder = True)
+        eh.scriptlogger.warning('Completed GFP Binding Step \
+            {} of {}'.format(step+1, len(eGFPTitrationTimingsKeys)))
 
     #6. Post-Titration Washout and Imaging. Leave Under Positive Pressure
     eh.scriptlogger.info('6/6. Started Buffer Flush and Final Imaging')
@@ -720,6 +900,11 @@ def performGFPTitration(expObject, deviceName, channelsExposures, channelsExposu
     vc.openValves([deviceName], ['in', 's1', 's2', 'out'])
     time.sleep(stepUpEquilibrationTime)
     vc.returnToSafeState([deviceName])
-    ic.scan(expObject.rootPath, channelsExposures, deviceName, 'PostTitration PostWash ButtonsDown', eh.posLists[deviceName], wrappingFolder = True)
+    ic.scan(expObject.rootPath, 
+        channelsExposures, 
+        deviceName, 
+        'PostTitration PostWash ButtonsDown', 
+        eh.posLists[deviceName], 
+        wrappingFolder = True)
     vc.openValves([deviceName], [bufferInput, 'in', 's1', 's2'])
     eh.scriptlogger.info('Completed eGFP Titration Experiment')

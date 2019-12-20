@@ -107,8 +107,8 @@ def move_stage_custom(x, y, z):
 	hi.core.setXYPosition(x,y)
 	hi.core.waitForDevice(hi.core.getXYStageDevice())
 	
-	hi.core.setZPosition(z)
-	hi.core.waitForDevice(hi.core.getZStageDevice())
+	hi.core.setPosition(hi.core.getFocusDevice(), z)
+	hi.core.waitForDevice(hi.core.getFocusDevice())
 
 
 def move_stage_poslist(position_list, poslistIndex, zControl = True):
@@ -132,8 +132,8 @@ def move_stage_poslist(position_list, poslistIndex, zControl = True):
 	
 	if ('z' in position_list.columns) and zControl:
 		z = position_list[['z']].iloc[i]
-		hi.core.setZPosition(z)
-		hi.core.waitForDevice(hi.core.getZStageDevice())
+		hi.core.setPosition(hi.core.getFocusDevice(), z)
+		hi.core.waitForDevice(hi.core.getFocusDevice())
 
 
 def home_stage(position_list, zControl = True):

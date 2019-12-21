@@ -126,17 +126,16 @@ class ExperimentalHarness:
 		Return:
 			None
 		"""
-		logMessageFmt = '%(asctime)s %(name)-12s %(levelname)-8s %(message)s'
-		logTimeFmt = '%y-%m-%d %H:%M:%S'
-
 		logging.basicConfig(level=logging.INFO,
-					format = logMessageFmt,
-					datefmt = logTimeFmt,
+					format = '%(asctime)s %(name)-12s %(levelname)-8s %(message)s',
+					datefmt = '%y-%m-%d %H:%M:%S',
 					filename = os.path.join(self.root, '{}.log'.format(name)),
 					filemode = 'a+')
 
 		console = logging.StreamHandler()
 		console.setLevel(logging.INFO)
+		formatter = logging.Formatter('%(asctime)s %(name)-12s %(levelname)-8s %(message)s', '%y-%m-%d %H:%M:%S')
+		console.setFormatter(formatter)
 
 		formatter = logging.Formatter(console, logTimeFmt)
 		console.setFormatter(formatter)

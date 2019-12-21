@@ -126,12 +126,12 @@ def move_stage_poslist(position_list, poslistIndex, zControl = True):
 		None
 	"""
 
-	x,y = position_list[['x','y']].iloc[i]
+	x,y = position_list[['x','y']].iloc[poslistIndex]
 	hi.core.setXYPosition(x,y)
 	hi.core.waitForDevice(hi.core.getXYStageDevice())
 	
 	if ('z' in position_list.columns) and zControl:
-		z = position_list[['z']].iloc[i]
+		z = position_list[['z']].iloc[poslistIndex]
 		hi.core.setPosition(hi.core.getFocusDevice(), z)
 		hi.core.waitForDevice(hi.core.getFocusDevice())
 
@@ -206,7 +206,9 @@ def scan(data_dir, channelsExposures, dname, note, position_list,
 	scanRecord = []
 	for i in xrange(len(position_list)):
 		move_stage_poslist(position_list, i, zControl)
-		
+		x,y = position_list[['x','y']].iloc[i]
+		z = position_list[['z']].iloc[i]
+
 		for channel in channelsExposures.keys():
 			hi.core.setConfig('Channel', channel)
 			time.sleep(0.3)

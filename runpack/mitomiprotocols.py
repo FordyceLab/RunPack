@@ -467,8 +467,8 @@ def flowSubstratesStartConcurrentAssays(deviceNames, substrateInputs, KineticAcq
                 ic.scan(d1kineticDirectory, 
                     d1Kinetics.channelsExposures, 
                     d1Kinetics.device, 
-                    d1Kinetics.note.replace(" ", "_"), p
-                    os_lists[0], 
+                    d1Kinetics.note.replace(" ", "_"), 
+                    pos_lists[0], 
                     wrappingFolder = True)
                 
                 vc.close('chip', substrateInputs[1])
@@ -483,7 +483,7 @@ def flowSubstratesStartConcurrentAssays(deviceNames, substrateInputs, KineticAcq
                     d2Kinetics.note.replace(" ", "_"), 
                     pos_lists[1], 
                     wrappingFolder = True)
-                    scanIndex+=1
+                scanIndex+=1
             else:
                 lastScanTime = time.time()
                 ic.scan(d1kineticDirectory, 

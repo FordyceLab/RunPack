@@ -75,7 +75,7 @@ class ExperimentalHarness:
 
 		posList = ut.load_mm_positionlist(path)
 		ExperimentalHarness.posLists[dname] = posList
-		logging.info('Added Posiiton List for Device {}'.format(dname))
+		logging.info('Added Position List for Device {}'.format(dname))
 
 
 	def removePositionList(self, dname):

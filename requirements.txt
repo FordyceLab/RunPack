@@ -1,4 +1,3 @@
-acqpack>=1.1.1
 matplotlib>=2.1.0
 pandas>=0.19.2
 numpy>=1.13.3

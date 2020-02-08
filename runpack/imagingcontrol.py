@@ -211,7 +211,7 @@ def scan(data_dir, channelsExposures, dname, note, position_list,
 
 		for channel in channelsExposures.keys():
 			hi.core.setConfig('Channel', channel)
-			time.sleep(0.3)
+			hi.core.waitForSystem()
 			timestamp = time.strftime("%Y%m%d-%H%M%S", time.localtime())
 			for exposure in channelsExposures[channel]:
 				hi.core.setProperty(hi.core.getCameraDevice(), 'Exposure', exposure)

@@ -137,7 +137,7 @@ class ExperimentalHarness:
 		formatter = logging.Formatter('%(asctime)s %(name)-12s %(levelname)-8s %(message)s', '%y-%m-%d %H:%M:%S')
 		console.setFormatter(formatter)
 
-		formatter = logging.Formatter(console, logTimeFmt)
+		formatter = logging.Formatter(console, '%y-%m-%d %H:%M:%S')
 		console.setFormatter(formatter)
 
 		# add the handler to the root logger

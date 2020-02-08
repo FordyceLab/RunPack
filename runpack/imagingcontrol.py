@@ -207,7 +207,6 @@ def scan(data_dir, channelsExposures, dname, note, position_list,
 	for i in xrange(len(position_list)):
 		move_stage_poslist(position_list, i, zControl)
 		x,y = position_list[['x','y']].iloc[i]
-		z = position_list[['z']].iloc[i]
 
 		for channel in channelsExposures.keys():
 			hi.core.setConfig('Channel', channel)

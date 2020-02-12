@@ -780,9 +780,7 @@ def performGFPTitration(expObject, deviceName, channelsExposures, channelsExposu
     inputs = {'hep', 'prot', 'ext2', 'ext1', 'ph', 'na', 'bb', 'w'}
 
     if eGFPInput not in inputs or bufferInput not in inputs:
-        raise ValueError('Port name(s) incorrectly specified. \
-                            The eGFP and Buffer Input Ports must be specified without a \
-                            trailing device number')
+        raise ValueError('Port name(s) incorrectly specified. The eGFP and Buffer Input Ports must be specified without a trailing device number')
 
     eh.scriptlogger.critical('Starting eGFP Titration in 10s')
     time.sleep(10) # A safety in case you notice something wrong
@@ -790,9 +788,7 @@ def performGFPTitration(expObject, deviceName, channelsExposures, channelsExposu
     # 1. Close valving, scan GFP
     eh.scriptlogger.info('1/6. Started Assay. Preparing Valve States and Background Imaging')
     eh.scriptlogger.info(
-        'GFP Input: {}, Buffer Input: {}, Channels & Exposures: {}, \
-        Pre-Equilibration Steps: {}, Titration Steps: {}\
-        '.format(
+        'GFP Input: {}, Buffer Input: {}, Channels & Exposures: {}, Pre-Equilibration Steps: {}, Titration Steps: {}'.format(
             eGFPInput, 
             bufferInput, 
             channelsExposures, 
@@ -820,8 +816,7 @@ def performGFPTitration(expObject, deviceName, channelsExposures, channelsExposu
         vc.closeValves([deviceName], [eGFPInput])
         vc.openValves([deviceName], [bufferInput])
         time.sleep(preEquilibrationFlushTime)
-        ic.scan(expObject.rootPath, channelsExposures, deviceName, 'PostPreEquilibrationBinding \
-            Step {}'.format(step+1), eh.posLists[deviceName], wrappingFolder = True)
+        ic.scan(expObject.rootPath, channelsExposures, deviceName, 'PostPreEquilibrationBinding Step {}'.format(step+1), eh.posLists[deviceName], wrappingFolder = True)
         vc.closeValves([deviceName], [bufferInput])
         eh.scriptlogger.warning('Completed Pre-Equilibration Cycle {} of {}'.format(step+1, numPreEquilibriumSteps))
     eh.scriptlogger.info('Completed Wall Pre-Equilibration')
@@ -888,8 +883,7 @@ def performGFPTitration(expObject, deviceName, channelsExposures, channelsExposu
             'PosteGFPTitrationBindingStep {} ButtonsDown'.format(step+1), 
             eh.posLists[deviceName], 
             wrappingFolder = True)
-        eh.scriptlogger.warning('Completed GFP Binding Step \
-            {} of {}'.format(step+1, len(eGFPTitrationTimingsKeys)))
+        eh.scriptlogger.warning('Completed GFP Binding Step {} of {}'.format(step+1, len(eGFPTitrationTimingsKeys)))
 
     #6. Post-Titration Washout and Imaging. Leave Under Positive Pressure
     eh.scriptlogger.info('6/6. Started Buffer Flush and Final Imaging')

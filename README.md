@@ -15,7 +15,6 @@ RunPack is a microfluidic valving and microscope control suite designed for HT-M
   - An *AssaySeries* parent class for sequential assay execution
   - (In development) A general-purpose task-scheduling "Riffled" Assay class for simultaneous/staggered assay execution using shared hardware (camera/scope/stage)
 - **mitomiprotocols**: HT-MEK-specific experimental protocols/scripts
-- **taskscheduler**: A general-purpose task scheduler for shared microscope/stage resources (not production ready)
 
 ### Setup
 #### Configuration

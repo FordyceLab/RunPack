@@ -2,7 +2,7 @@
 ![Fly Higher](/resources/fly_higher.png)
 
 ## Overview
-RunPack is a microfluidic valving and microscope control suite designed for HT-MEK and MITOMI experiments using a variety of device layouts and configurations and extensible to multiple assay types and experimental workflows. It provides hardware control of Nikon Ti microscopes via MicroManager (MMCore) and WAGO-controlled solenoid-actuated pneumatic valving. This suite sits atop the FordyceLab AcqPack to integrate logging, scripting, and image acquisition into one framework.
+RunPack is a microfluidic valving and microscope control suite designed for HT-MEK experiments using a variety of device layouts and configurations and extensible to multiple assay types and experimental workflows. It provides hardware control of Nikon Ti microscopes via MicroManager (MMCore) and WAGO-controlled solenoid-actuated pneumatic valving. This suite sits atop the FordyceLab AcqPack to integrate logging, scripting, and image acquisition into one framework.
 
 ### Architecture
 - **io**: High-level classes for software and hardware control
